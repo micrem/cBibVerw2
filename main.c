@@ -10,9 +10,11 @@ int test1();
 int test2();
 
 
+
 int main() {
 
     test2();
+    printf("t");
     return 0;
 
 /*
