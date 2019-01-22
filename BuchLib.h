@@ -31,6 +31,7 @@ typedef struct BibliothekS Bibliothek;
 typedef struct AusleiherS Ausleiher;
 
 int addBuch(Bibliothek* bibliothek, Buch* buch);
+int removeBuch(Bibliothek* bibliothek, int index);
 int checkInBuch(Buch *buch, const char* ausleiherName);
 int checkOutBuch(Buch *buch, const char* ausleiherName);
 
@@ -38,6 +39,13 @@ int getAusleiherIndexByName(LinkedList* ListeAusleiher, const char* ausleiherNam
 int getAusleiherCount(Bibliothek *bib, int buchIndex);
 
 Buch* getBuchByIndex(Bibliothek *bib, int index);
+
+
+int freeBib(Bibliothek* bib);
+int freeBuch(Bibliothek* bib, int index);
+// int freeAusleiher(Ausleiher* ausl);
+
+
 
 int printBuch(Buch* buch);
 int printBibliothek(Bibliothek* bibliothek);

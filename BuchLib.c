@@ -56,7 +56,7 @@ int checkInBuch(Buch *buch, const char* ausleiherName) {
     }
     int ausleiherIndex = getAusleiherIndexByName(&(buch->ListeAusleiher),ausleiherName);
     if (ausleiherIndex<0) {
-        if(DEBUG_MODE) printf("checkInBuch: Fehler, index<0 von 'getAusleiherIndexByName()' erhalten\n");
+        if(DEBUG_MODE) printf("checkInBuch: Fehler, konnte Ausleiher nicht finden!\n");
         return BIBL_ERROR;
     }
     Ausleiher* ptrAusleiherToRemove =  getListData(&(buch->ListeAusleiher), ausleiherIndex);
@@ -77,13 +77,17 @@ int checkOutBuch(Buch *buch, const char* ausleiherName) {
 
 int printBuch(Buch *buch) {
     if (!buch ) return BIBL_ERROR;
-    printf("Titel: '%s'\n", buch->Buchtitel);
-    printf("Autor: '%s'\n", buch->Buchautor);
+    printf("Titel: %s", buch->Buchtitel);
+    printf("Autor: %s", buch->Buchautor);
     printf("ISBN: %lld\n", buch->ISBN);
     printf("Exemplare: %d\n", buch->AnzahlExemplare);
-    printf("Ausleiher:\n");
+    if(buch->ListeAusleiher.length>0) {
+        printf("Ausleiher:\n");}
+    else{
+        printf("(keine Ausleiher)\n");
+    }
     for (int i=0; i<buch->ListeAusleiher.length; i++){
-        printf("\t%s\n",(char*)getListData(&(buch->ListeAusleiher),i ));
+        printf("\t%s",(char*)getListData(&(buch->ListeAusleiher),i ));
     }
     printf("\n");
     return BIBL_SUCCESS;
@@ -91,7 +95,15 @@ int printBuch(Buch *buch) {
 
 int printBibliothek(Bibliothek *bibliothek) {
     if (!bibliothek ) return BIBL_ERROR;
-    for (int i=0; i<bibliothek->BuecherListe.length; i++){
+    printf("Bibliothek:\n");
+    int anzBuecher=bibliothek->BuecherListe.length;
+    if (anzBuecher==0) {
+        printf("keine Buecher registriert\n");
+        return BIBL_SUCCESS;
+    }
+    printf("%d Buecher\n",anzBuecher);
+    for (int i=0; i<anzBuecher; i++){
+        printf("\nBuch %d:\n",i+1);
         printBuch(getListData(&(bibliothek->BuecherListe),i));
     }
     return BIBL_SUCCESS;
@@ -114,6 +126,36 @@ Buch *getBuchByIndex(Bibliothek *bib, int index) {
     tempBuch = (Buch*) getListData(&(bib->BuecherListe),index);
     if (tempBuch==NULL && DEBUG_MODE) printf("getBuchByIndex: Fehler, konnte Buch %d nicht finden!\n", index);
     return tempBuch;
+}
+
+int freeBib(Bibliothek *bib) {
+    if (bib==NULL) return BIBL_SUCCESS;
+    int countBuecher=bib->BuecherListe.length;
+    int indexBuecher=0;
+    for(indexBuecher=0;indexBuecher<countBuecher;indexBuecher++){
+        if (freeBuch(bib, 0))  {if(DEBUG_MODE) printf("freeBib: Fehler bei Buchspeicherfreigabe!\n"); exit(-1);}
+    }
+    free(bib);
+    bib=NULL;
+    return BIBL_SUCCESS;
+}
+
+int freeBuch(Bibliothek *bib, int index) {
+    if (bib==NULL) return BIBL_SUCCESS;
+    Buch* tempBuch;
+    Ausleiher* tempAusl;
+    int countAusl=0;
+    int indexAusl=0;
+    tempBuch=getListData(&(bib->BuecherListe),0);
+    countAusl=tempBuch->ListeAusleiher.length;
+    for(indexAusl=0;indexAusl<countAusl;indexAusl++){
+        tempAusl=getListData(&(tempBuch->ListeAusleiher),0);
+        free(tempAusl);
+        if(removeListItem(&(bib->BuecherListe),0)) {if(DEBUG_MODE) printf("freeBuch: Fehler bei Ausleiherspeicherfreigabe!\n"); exit(-1);}
+    }
+    free(tempBuch);
+    if(removeListItem(&(bib->BuecherListe),0)) {if(DEBUG_MODE) printf("freeBuch: Fehler bei Buchspeicherfreigabe!\n"); exit(-1);}
+    return BIBL_SUCCESS;
 }
 
 //!ErrorHasOccured() ??!??! HandleError();

@@ -56,25 +56,23 @@ int readNumber( long long* longlongPtr, const char* str, long long minVal, long 
     return BIBL_SUCCESS;
 }
 
-int readInputInteger(int *intPtr) {
-    long long tempLL;
+int readIntegerInput(int *intPtr) {
     char buf[MAXBUFFERSIZE];
-    if (readLine(buf,stdin)!=BIBL_SUCCESS) {if (DEBUG_MODE) printf("readInputInteger Fehler: konnte String nicht einlesen!\n"); return BIBL_ERROR;}
-    int ret = readNumber(&tempLL, buf, INT_MIN, INT_MAX);
-    if (ret==BIBL_SUCCESS) *intPtr  = (int) tempLL;
+    if (readLine(buf,stdin)!=BIBL_SUCCESS) {if (DEBUG_MODE) printf("readIntegerInput Fehler: konnte String nicht einlesen!\n"); return BIBL_ERROR;}
+    int ret = readInteger(intPtr, buf);
     return ret;
 }
 
-int readInputISBN(long long *longlongPtr) {
+int readISBNInput(long long *longlongPtr) {
     char buf[MAXBUFFERSIZE];
-    if (readLine(buf,stdin)!=BIBL_SUCCESS) {if (DEBUG_MODE) printf("readInputISBN Fehler: konnte String nicht einlesen!\n"); return BIBL_ERROR;}
-    int ret = readNumber(longlongPtr,buf, 0,9999999999999);
+    if (readLine(buf,stdin)!=BIBL_SUCCESS) {if (DEBUG_MODE) printf("readISBNInput Fehler: konnte String nicht einlesen!\n"); return BIBL_ERROR;}
+    int ret = readISBN(longlongPtr,buf);
     return ret;
 }
 
-int readInputString(char *buf) {
+int readStringInput(char *buf) {
     int ret = readLine(buf, stdin);
-    if (DEBUG_MODE) printf("(Eingabe:%s)\n", buf);
+    if (DEBUG_MODE>1) printf("(Eingabe:%s)\n", buf);
     return ret;
 }
 
@@ -90,6 +88,24 @@ int readInteger(int *intPtr, char *str) {
     return ret;
 }
 
+int readStringFile(FILE* fp, char* buf){
+    int ret = readLine(buf, fp);
+    if (DEBUG_MODE>1) printf("(Eingabe:%s)\n", buf);
+    return ret;
+}
 
+int readISBNFile(FILE* fp, long long *longlongPtr){
+    char buf[MAXBUFFERSIZE];
+    if (readLine(buf,fp)!=BIBL_SUCCESS) {if (DEBUG_MODE) printf("readISBNFile Fehler: konnte String nicht einlesen!\n"); return BIBL_ERROR;}
+    int ret = readISBN(longlongPtr,buf);
+    return ret;
+}
+
+int readIntegerFile(FILE* fp, int* intPtr){
+    char buf[MAXBUFFERSIZE];
+    if (readLine(buf,fp)!=BIBL_SUCCESS) {if (DEBUG_MODE) printf("readIntegerFile Fehler: konnte String nicht einlesen!\n"); return BIBL_ERROR;}
+    int ret = readInteger(intPtr, buf);
+    return ret;
+}
 
 

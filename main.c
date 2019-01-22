@@ -14,7 +14,6 @@ int test2();
 int main() {
 
     test2();
-    printf("t");
     return 0;
 
 /*
@@ -62,7 +61,7 @@ do {
             readInputString(buffer);
             strcpy(newBuch->Buchautor, buffer);
             printf("\nBitte ISBN eingeben: ");
-            newBuch->ISBN= readInputISBN(0);
+            newBuch->ISBN= readISBNInput(0);
             printf("\nBitte Exemplaranzahl eingeben: ");
             newBuch->AnzahlExemplare= readInputInteger(NULL);
             printf(addBuch(bib, newBuch) ? "\nFehler beim Buch Anlegen!" : "Buch angelegt!\n");
@@ -78,11 +77,11 @@ do {
             break;
         case 3:
         {   printf("\nBitte Buchindex zum Wiedergeben eingeben: ");
-            Buch* buch = getListData(&(bib->BuecherListe),(int) readInputInteger(NULL));
+            Buch* buch = getListData(&(bib->BuecherListe),(int) readIntegerInput(NULL));
             printBuch(buch);
             printf("\nBitte Ausleihernamen eingeben: ");
             char buffer[MAXBUFFERSIZE];
-            readInputString(buffer);
+            readStringInput(buffer);
             printf(checkInBuch( buch, buffer)?"\nFehler beim Wiedergeben!": "Buch wiedergegeben!\n");}
             break;
         case 4:
@@ -133,11 +132,11 @@ int test1() {
     int ret;
 
     printf(">");
-    ret = readInputISBN(&ll);
+    ret = readISBNInput(&ll);
     printf("main return val:%d\n",ret);
     !ret ? printf("input:%lld\n",ll): printf("error, main return val:%d\n",ret);
     printf(">");
-    !(ret=readInputString(buf)) ? printf("input:%s, length: %ld\n",buf, strlen(buf)): printf("error, main return val:%d\n",ret);
+    !(ret= readStringInput(buf)) ? printf("input:%s, length: %ld\n",buf, strlen(buf)): printf("error, main return val:%d\n",ret);
 
     printf("input: ");
     for(int i=0;i<MAXBUFFERSIZE;i++){
@@ -157,6 +156,7 @@ int test2() {
     for(int i = 0;i<3; i++){
         buecher[i]=newEmptyBuch();
         ausl[i]=newEmptyAusleiher();
+        sprintf(ausl[i]->name,"Ausleiher%d\n",i);
     }
 
     for(int i = 0;i<3; i++) {
@@ -166,7 +166,9 @@ int test2() {
         buecher[i]->AnzahlExemplare=1+i*2;
         addBuch(bib, buecher[i]);
     }
-    //checkOutBuch()
+    checkOutBuch(getBuchByIndex(bib,2),ausl[1]->name);
+    checkOutBuch(getBuchByIndex(bib,2),ausl[1]->name);
+    printBuch(getBuchByIndex(bib, 2));
     saveBib(bib);
 
     return 0;

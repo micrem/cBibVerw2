@@ -4,15 +4,54 @@
 
 #include "BuchLibLoadSave.h"
 
-int loadBib (Bibliothek *bib) {
+//interne Hilfsfunktion
+
+int loadError(const char* errorMsg, Bibliothek* bib, FILE* fp){
+    if (DEBUG_MODE) printf("%s\n",errorMsg);
+    //Bibliothek loeschen
+    if (freeBib(bib)) {printf("Fehler! Unvollstaendige Bibliothek konnte nicht wieder aus Speicher entfernt werden! Programm wird beendet.\n"); exit(-1);}
+    //Datenstream schliessen
+    fclose(fp);
+
+    return BIBL_SUCCESS;
+}
+
+Bibliothek* loadBib () {
+    Bibliothek* bib = newEmptyBibliothek();
     FILE *fp;
-    char str[60];
+    char str[MAXBUFFERSIZE];
+
+    //Datei oeffnen
+    //auf Fehler beim Oeffnen priefen
+    //auf leere Datei pruefen
+
+    fp = fopen(SAVEFILENAME, "r");
+    if(fp == NULL) {
+        loadError("saveBib: Fehler, konnte Datei nicht oeffnen!\n",bib, fp);
+        return(NULL);
+    }
+
+    //Anzahl Buecher einlesen
+rea
+    //loop
+
+    //Titel
+
+    //Author
+
+    //ISBN
+
+    //Anz Exemplare
+
+    //Anz Ausleiher
+
+    //loop Ausleiher
+
 
     /* opening file for reading */
     fp = fopen("file.txt" , "r");
     if(fp == NULL) {
-        perror("Error opening file");
-        return(-1);
+
     }
     if( fgets (str, 60, fp)!=NULL ) {
         /* writing content to stdout */
@@ -35,16 +74,17 @@ int saveBib(Bibliothek *bib) {
 
     fp = fopen(SAVEFILENAME, "w");
     if(fp==NULL) {if (DEBUG_MODE) printf("saveBib: Fehler, konnte Datei nicht oeffnen!\n"); return BIBL_ERROR;}
+    fprintf(fp, "%d\n",bib->BuecherListe.length);
     for(buchIndex=0;buchIndex<bib->BuecherListe.length;buchIndex++){
         if(buchIndex==0) {tempBuchNode=bib->BuecherListe.first;}
         else {tempBuchNode=tempBuchNode->next;}
         tempBuch=(Buch*)(tempBuchNode->data);
         fputs(tempBuch->Buchtitel,fp);
         fputs(tempBuch->Buchautor,fp);
-        fprintf(fp, "ISBN: %lld\n",tempBuch->ISBN);
-        fprintf(fp, "Exemplare: %d\n",tempBuch->AnzahlExemplare);
-        fprintf(fp, "AnzAusleiher: %d\n",tempBuch->ListeAusleiher.length);
-        fflush(fp);
+        fprintf(fp, "%lld\n",tempBuch->ISBN);
+        fprintf(fp, "%d\n",tempBuch->AnzahlExemplare);
+        fprintf(fp, "%d\n",tempBuch->ListeAusleiher.length);
+        if(fflush(fp)) {if (DEBUG_MODE) printf("saveBib: Fehler, konnte Datensatz nicht schreiben!\n"); return BIBL_ERROR;}
 
         for(ausleiherIndex=0;ausleiherIndex<getAusleiherCount(bib,buchIndex);ausleiherIndex++) {
             if (ausleiherIndex == 0) { tempAuslNode = tempBuch->ListeAusleiher.first; }
@@ -57,22 +97,4 @@ int saveBib(Bibliothek *bib) {
 
     if(fclose(fp)) {if (DEBUG_MODE) printf("saveBib: Fehler, konnte Datei nicht schliessen!\n"); return BIBL_ERROR;}
     return BIBL_SUCCESS;
-
-    /* opening file for reading */
-    int i=0;
-    fp = fopen(SAVEFILENAME , "r");
-    if(fp == NULL) {
-        perror("Error opening file");
-        return(-1);
-    }
-    while( fgets (str, MAXBUFFERSIZE, fp)!=NULL ) {
-        /* writing content to stdout */
-        printf(":");
-        i=0;
-        while (str[i]!='\0'){
-            printf("%d '%c'\n", str[i],str[i]); i++;}
-    }
-    fclose(fp);
-
-    return 0;
 }

@@ -9,7 +9,7 @@
 // 0 = keine Debug-Nachrichten
 // 1 = normal
 // 2 = verbos
-#define LLIST_DEBUG_MODE 2
+#define LLIST_DEBUG_MODE 1
 
 typedef struct LLNodeS LLNode;
 typedef struct LinkedListS LinkedList;

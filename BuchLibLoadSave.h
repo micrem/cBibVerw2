@@ -10,6 +10,6 @@
 #include "BuchLibReadData.h"
 
 int saveBib(Bibliothek *bib);
-int loadBib(Bibliothek *bib);
+Bibliothek* loadBib();
 
 #endif //LOADSAVE_H_INCLUDED
