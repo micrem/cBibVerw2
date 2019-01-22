@@ -164,7 +164,7 @@ int test2() {
         buecher[i]->AnzahlExemplare=1+i*2;
         addBuch(bib, buecher[i]);
     }
-
+    checkOutBuch()
     saveBib(bib);
 
     return 0;

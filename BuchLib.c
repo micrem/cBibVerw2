@@ -109,4 +109,11 @@ int getAusleiherCount(Bibliothek *bib, int buchIndex) {
     return ((Buch*)getListData(&(bib->BuecherListe),buchIndex))->ListeAusleiher.length;
 }
 
+Buch *getBuchByIndex(Bibliothek *bib, int index) {
+    Buch* tempBuch;
+    tempBuch = (Buch*) getListData(&(bib->BuecherListe),index);
+    if (tempBuch==NULL && DEBUG_MODE) printf("getBuchByIndex: Fehler, konnte Buch %d nicht finden!\n", index);
+    return tempBuch;
+}
+
 //!ErrorHasOccured() ??!??! HandleError();

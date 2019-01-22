@@ -34,11 +34,13 @@ int addBuch(Bibliothek* bibliothek, Buch* buch);
 int checkInBuch(Buch *buch, const char* ausleiherName);
 int checkOutBuch(Buch *buch, const char* ausleiherName);
 
-int printBuch(Buch* buch);
-int printBibliothek(Bibliothek* bibliothek);
-
 int getAusleiherIndexByName(LinkedList* ListeAusleiher, const char* ausleiherName);
 int getAusleiherCount(Bibliothek *bib, int buchIndex);
+
+Buch* getBuchByIndex(Bibliothek *bib, int index);
+
+int printBuch(Buch* buch);
+int printBibliothek(Bibliothek* bibliothek);
 
 Buch* newEmptyBuch();
 Bibliothek* newEmptyBibliothek();

@@ -11,15 +11,15 @@
 // 2 = verbos
 #define LLIST_DEBUG_MODE 2
 
-typedef struct LLNode LLNode;
-typedef struct LinkedList LinkedList;
+typedef struct LLNodeS LLNode;
+typedef struct LinkedListS LinkedList;
 
-struct LLNode {
+struct LLNodeS {
     void* data ;
     LLNode* next ;
 } ;
 
-struct LinkedList {
+struct LinkedListS {
     LLNode* first ;
     int length ;
 } ;
