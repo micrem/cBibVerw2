@@ -22,7 +22,7 @@ Bibliothek* loadBib () {
     char str[MAXBUFFERSIZE];
 
     //Datei oeffnen
-    //auf Fehler beim Oeffnen priefen
+    //auf Fehler beim Oeffnen pruefen
     //auf leere Datei pruefen
 
     fp = fopen(SAVEFILENAME, "r");
