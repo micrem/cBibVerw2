@@ -2,6 +2,12 @@
 
 
 //interne Hilfsfunktionen
+
+/**
+ *
+ * @param list
+ * @return
+ */
 LLNode *getListLastNode(LinkedList *list) {
     if (list==NULL) {
         if(LLIST_DEBUG_MODE) printf("getListLastNode() hat leere Liste erhalten!\n");
@@ -15,12 +21,13 @@ LLNode *getListLastNode(LinkedList *list) {
 }
 
 LLNode *getListNode(LinkedList *list, int index) {
-    LLNode *runner = list->first;
+    LLNode *runner;
     int i = 0;
     if (list == NULL || index + 1 > list->length || index < 0) {
         if(LLIST_DEBUG_MODE) printf("getListNode hat leere Liste oder ungueltigen Index erhalten!\n");
         return NULL;
     }
+    runner = list->first;
     for (i = 0; i < index; i++) {
         runner = runner->next;
     }

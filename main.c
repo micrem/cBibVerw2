@@ -8,13 +8,17 @@
 
 int test1();
 int test2();
+int test3();
+int test4();
 
 
 
 int main() {
 
-    test2();
+test2();
+
     return 0;
+
 
 /*
 
@@ -127,7 +131,7 @@ do {
 
 
 int test1() {
-    char buf[MAXBUFFERSIZE];
+    char buf[MAXBUFFERSIZE]={0};
     long long  ll;
     int ret;
 
@@ -167,9 +171,25 @@ int test2() {
         addBuch(bib, buecher[i]);
     }
     checkOutBuch(getBuchByIndex(bib,2),ausl[1]->name);
-    checkOutBuch(getBuchByIndex(bib,2),ausl[1]->name);
+    checkOutBuch(getBuchByIndex(bib,2),ausl[2]->name);
     printBuch(getBuchByIndex(bib, 2));
     saveBib(bib);
 
+    return 0;
+}
+
+int test3() {
+    Bibliothek* bib=loadBib();
+    printBibliothek(bib);
+    long long ll=99;
+    int a=0;
+    readISBN(&ll, "123123123123456");
+    printf("%lld\n",ll);
+}
+
+int test4(){
+    int i=0;
+    char buf[MAXBUFFERSIZE]={0};
+    readStringInput(buf);
     return 0;
 }

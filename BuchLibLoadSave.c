@@ -30,9 +30,15 @@ Bibliothek* loadBib () {
         loadError("saveBib: Fehler, konnte Datei nicht oeffnen!\n",bib, fp);
         return(NULL);
     }
-
+    int a;
+    while(!feof(fp)){
+        if(readStringFile(fp,str)) break;
+        printf("'%s'\n",str);
+        if(!readInteger(&a,str)) printf("(Num: %d)\n",a);
+    }
+    //if(readIntegerFile(fp,&a)) printf("err");
+    //printf("a:%d\n",a);
     //Anzahl Buecher einlesen
-rea
     //loop
 
     //Titel
@@ -48,15 +54,6 @@ rea
     //loop Ausleiher
 
 
-    /* opening file for reading */
-    fp = fopen("file.txt" , "r");
-    if(fp == NULL) {
-
-    }
-    if( fgets (str, 60, fp)!=NULL ) {
-        /* writing content to stdout */
-        puts(str);
-    }
     fclose(fp);
 
     return(0);
@@ -64,7 +61,6 @@ rea
 
 int saveBib(Bibliothek *bib) {
     FILE *fp;
-    char str[MAXBUFFERSIZE];
     int buchIndex=0;
     int ausleiherIndex=0;
     LLNode* tempBuchNode=NULL;

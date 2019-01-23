@@ -6,13 +6,16 @@
 #include <limits.h>
 #include <errno.h>
 
+//returns success on EOF!
+//expects \n in every line!
 int readLine(char *buf, FILE* inputStream) {
     int charBuffer;
 
     //liesst maximal MAXBUFFERSIZE-1 chars ein (inklusive '\n') und terminiert Buffer mit '\0'
     //(also MAXBUFFERSIZE-2 verwertbare chars)
     if (fgets(buf, MAXBUFFERSIZE, inputStream) == NULL) {
-        if(DEBUG_MODE) printf("readLine: fgets Fehler\n");
+        if (feof(inputStream)) return BIBL_SUCCESS;
+        if(DEBUG_MODE ) printf("readLine: Fehler beim Aufruf von fgets, konnte Zeile nicht einlesen!\n");
         return BIBL_ERROR; //keine Eingabe
     }
     // Falls Eingabe zu lang (=vorletztes Zeichen nicht '\n'), Eingabebuffer leeren
@@ -31,17 +34,16 @@ int readLine(char *buf, FILE* inputStream) {
 
 int readNumber( long long* longlongPtr, const char* str, long long minVal, long long maxVal) {
     int i;
-    char buffer[FILENAME_MAX];
     char* lastChar=NULL;
-    if (longlongPtr==NULL) {if (DEBUG_MODE) printf("readInputNumber Fehler: konnte Zahl nicht einlesen, pointer-parameter=NULL!\n"); return BIBL_ERROR;}
-    if (str==NULL || *str=='\0') {if (DEBUG_MODE) printf("readInputNumber Fehler: konnte Zahl nicht einlesen, Parameterfehler!\n"); return BIBL_ERROR;}
-    if (minVal>maxVal){if (DEBUG_MODE) printf("readInputNumber Fehler: konnte Zahl nicht einlesen, Wertebereich falsch definiert!\n"); return BIBL_ERROR;}
+    if (longlongPtr==NULL) {if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, pointer-parameter=NULL!\n"); return BIBL_ERROR;}
+    if (str==NULL || *str=='\0') {if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, Parameterfehler!\n"); return BIBL_ERROR;}
+    if (minVal>maxVal){if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, Wertebereich falsch definiert!\n"); return BIBL_ERROR;}
     for(i=0; i<MAXBUFFERSIZE;i++) if(str[i]=='\0') break;
-    if (i==MAXBUFFERSIZE) {if (DEBUG_MODE) printf("readInputNumber Fehler: konnte Zahl nicht einlesen, String nicht terminiert!\n"); return BIBL_ERROR;}
+    if (i==MAXBUFFERSIZE) {if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, String nicht terminiert!\n"); return BIBL_ERROR;}
     errno=0;
-    *longlongPtr = strtoll(buffer, &lastChar, 10);
-    if (lastChar != buffer+strlen(buffer)) {
-        if (DEBUG_MODE) printf("Fehler: konnte Zahl nicht einlesen\n");
+    *longlongPtr = strtoll(str, &lastChar, 10);
+    if (lastChar != str+strlen(str)) {
+        if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen\n");
         return BIBL_ERROR;
     }
     if (DEBUG_MODE>1) printf("(Eingabe:%lld)\n", *longlongPtr);
@@ -50,7 +52,7 @@ int readNumber( long long* longlongPtr, const char* str, long long minVal, long 
         || (errno != 0 && *longlongPtr == 0)
         || (*longlongPtr>=LLONG_MAX || *longlongPtr <= LLONG_MIN) )
     {
-        if (DEBUG_MODE) printf("Fehler: konnte Zahl nicht einlesen! (Wertebereich: %lld-%lld)\n",minVal,maxVal);
+        if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen! (Wertebereich: %lld bis %lld)\n",minVal,maxVal);
         return BIBL_ERROR;
     }
     return BIBL_SUCCESS;
