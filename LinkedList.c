@@ -10,8 +10,8 @@
 
 //interne Hilfsfunktionen
 
-/**
- * @brief gibt Pointer zur letzten Node der Liste 'list' aus oder NULL
+/** interne Hilfsfunktion
+ * gibt Pointer zur letzten Node der Liste 'list' aus oder NULL
  * @param list Pointer zur Liste in der gesucht wird
  * @return Pointer zur letzten Node oder NULL
  */
