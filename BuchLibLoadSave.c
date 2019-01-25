@@ -9,7 +9,7 @@
 int loadError(const char* errorMsg, Bibliothek* bib, FILE* fp){
     if (DEBUG_MODE) printf("%s\n",errorMsg);
     //Bibliothek loeschen
-    if (freeBib(bib)) {printf("Fehler! Unvollstaendige Bibliothek konnte nicht wieder aus Speicher entfernt werden! Programm wird beendet.\n"); exit(-1);}
+    if (freeBib(bib)) {printf("Fehler! Unvollstaendig geladene Bibliothek konnte nicht wieder aus Speicher entfernt werden! Programm wird beendet.\n"); exit(-1);}
     //Datenstream schliessen
     fclose(fp);
 
@@ -20,38 +20,50 @@ Bibliothek* loadBib () {
     Bibliothek* bib = newEmptyBibliothek();
     FILE *fp;
     char str[MAXBUFFERSIZE];
-
+    int buecherCount=0;
+    int auslCount=0;
+    int buecherIndex=0;
+    Buch* tempBuch;
     //Datei oeffnen
     //auf Fehler beim Oeffnen pruefen
     //auf leere Datei pruefen
 
     fp = fopen(SAVEFILENAME, "r");
     if(fp == NULL) {
-        loadError("saveBib: Fehler, konnte Datei nicht oeffnen!\n",bib, fp);
+        loadError("loadBib: Fehler, konnte Datei nicht oeffnen!\n",bib, fp);
         return(NULL);
     }
+
     int a;
-    while(!feof(fp)){
-        if(readStringFile(fp,str)) break;
-        printf("'%s'\n",str);
-        if(!readInteger(&a,str)) printf("(Num: %d)\n",a);
-    }
-    //if(readIntegerFile(fp,&a)) printf("err");
-    //printf("a:%d\n",a);
+//    while(!feof(fp)){
+//        if(readStringFile(fp,str)) break;
+//        printf("'%s'\n",str);
+//        if(!readInteger(&a,str)) printf("(Num: %d)\n",a);
+//    }
+
     //Anzahl Buecher einlesen
-    //loop
+    if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
+    if(feof(fp)) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp);return NULL;}
+    if(readInteger(&a,str) || a<0 ) {loadError("loadBib: Fehler, konnte Anzahl Buecher nicht laden!\n",bib,fp);return NULL;}
 
-    //Titel
+    //loop Buecher
+    for (buecherIndex=0;buecherIndex<buecherCount;buecherIndex++){
+        //Titel
+        if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
+        if(feof(fp)) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp);return NULL;}
+        if(strlen(str)< 1 || strlen(str)>MAXBUFFERSIZE) {loadError("loadBib: Fehler, konnte Buchtitel nicht lesen!\n",bib,fp);return NULL;}
 
-    //Author
+        //Author
 
-    //ISBN
+        //ISBN
 
-    //Anz Exemplare
+        //Anz Exemplare
 
-    //Anz Ausleiher
+        //Anz Ausleiher
 
-    //loop Ausleiher
+        //loop Ausleiher
+
+    }
 
 
     fclose(fp);
