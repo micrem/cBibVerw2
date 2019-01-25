@@ -154,7 +154,7 @@ int freeBuch(Bibliothek *bib, int index) {
     for (indexAusl = 0; indexAusl < countAusl; indexAusl++) {
         tempAusl = getListData(&(tempBuch->ListeAusleiher), 0);
         free(tempAusl);
-        if (removeListItem(&(bib->BuecherListe), 0)) {
+        if (removeListItem(&(tempBuch->ListeAusleiher), 0)) {
             if (DEBUG_MODE)
                 printf("freeBuch: Fehler bei Ausleiherspeicherfreigabe!\n");
             exit(-1);

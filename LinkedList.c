@@ -33,10 +33,10 @@ LLNode *getListLastNode(LinkedList *list) {
  * @return LLNode Pointer zur indizierten Node oder NULL
  */
 LLNode *getListNode(LinkedList *list, int index) {
-    LLNode *runner;
+    LLNode *runner=NULL;
     int i = 0;
     if (list == NULL || index + 1 > list->length || index < 0) {
-        if (LLIST_DEBUG_MODE) printf("getListNode hat leere Liste oder ungueltigen Index erhalten!\n");
+        if (LLIST_DEBUG_MODE>1) printf("getListNode hat leere Liste oder ungueltigen Index erhalten!\n");
         return NULL;
     }
     runner = list->first;
@@ -48,7 +48,7 @@ LLNode *getListNode(LinkedList *list, int index) {
 }
 
 LLNode *newEmptyNode() {
-    LLNode *new_node;
+    LLNode *new_node=NULL;
     new_node = malloc(sizeof(LLNode));
     if (new_node == NULL) {
         if (LLIST_DEBUG_MODE) printf("newEmptyNode() konnte keinen Speicher anlegen!\n");
