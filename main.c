@@ -15,7 +15,7 @@ int test4();
 
 int main() {
 
-test2();
+    test2();
 
     return 0;
 
@@ -174,7 +174,8 @@ int test2() {
     checkOutBuch(getBuchByIndex(bib,2),ausl[2]->name);
     printBuch(getBuchByIndex(bib, 2));
     saveBib(bib);
-
+    printf("freebib:%d\n",freeBib(bib));
+    loadBib();
     return 0;
 }
 

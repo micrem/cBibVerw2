@@ -34,28 +34,36 @@ Bibliothek* loadBib () {
         return(NULL);
     }
 
-    int a;
+    int tempInt;
 //    while(!feof(fp)){
 //        if(readStringFile(fp,str)) break;
 //        printf("'%s'\n",str);
-//        if(!readInteger(&a,str)) printf("(Num: %d)\n",a);
+//        if(!readInteger(&tempInt,str)) printf("(Num: %d)\n",tempInt);
 //    }
 
     //Anzahl Buecher einlesen
     if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
     if(feof(fp)) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp);return NULL;}
-    if(readInteger(&a,str) || a<0 ) {loadError("loadBib: Fehler, konnte Anzahl Buecher nicht laden!\n",bib,fp);return NULL;}
-
+    if(readInteger(&tempInt,str) || tempInt<0 ) {loadError("loadBib: Fehler, konnte Anzahl Buecher nicht laden!\n",bib,fp);return NULL;}
+    buecherCount=tempInt;
     //loop Buecher
     for (buecherIndex=0;buecherIndex<buecherCount;buecherIndex++){
         //Titel
         if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
         if(feof(fp)) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp);return NULL;}
-        if(strlen(str)< 1 || strlen(str)>MAXBUFFERSIZE) {loadError("loadBib: Fehler, konnte Buchtitel nicht lesen!\n",bib,fp);return NULL;}
+        if(strlen(str)< 1 || strlen(str)>=MAXBUFFERSIZE) {loadError("loadBib: Fehler, konnte Buchtitel nicht lesen!\n",bib,fp);return NULL;}
+        if (DEBUG_MODE>1) printf("Titel eingelesen: '%s'", str);
+        if (str[strlen(str)-1]!='\n') { //Letztes Zeichen im String auf NewLine setzen
+            if (strlen(str)-1<MAXBUFFERSIZE) str[strlen(str)-1]!='\n';
+                    else str[MAXBUFFERSIZE-2]='\n';
+        }
+        strcpy(tempBuch->Buchtitel,str);
 
         //Author
+        if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
 
         //ISBN
+        if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
 
         //Anz Exemplare
 
