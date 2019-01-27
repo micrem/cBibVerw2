@@ -7,7 +7,7 @@
 //interne Hilfsfunktion
 
 int loadError(const char* errorMsg, Bibliothek* bib, FILE* fp){
-    if (DEBUG_MODE) printf("%s\n",errorMsg);
+    if (DEBUG_MODE) printf("%s",errorMsg);
     //Bibliothek loeschen
     if (freeBib(bib)) {printf("Fehler! Unvollstaendig geladene Bibliothek konnte nicht wieder aus Speicher entfernt werden! Programm wird beendet.\n"); exit(-1);}
     //Datenstream schliessen
@@ -16,6 +16,7 @@ int loadError(const char* errorMsg, Bibliothek* bib, FILE* fp){
     return BIBL_SUCCESS;
 }
 
+
 Bibliothek* loadBib () {
     Bibliothek* bib = newEmptyBibliothek();
     FILE *fp;
@@ -23,7 +24,9 @@ Bibliothek* loadBib () {
     int buecherCount=0;
     int auslCount=0;
     int buecherIndex=0;
+    int auslIndex=0;
     Buch* tempBuch;
+
     //Datei oeffnen
     //auf Fehler beim Oeffnen pruefen
     //auf leere Datei pruefen
@@ -35,48 +38,37 @@ Bibliothek* loadBib () {
     }
 
     int tempInt;
-//    while(!feof(fp)){
-//        if(readStringFile(fp,str)) break;
-//        printf("'%s'\n",str);
-//        if(!readInteger(&tempInt,str)) printf("(Num: %d)\n",tempInt);
-//    }
 
     //Anzahl Buecher einlesen
-    if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
-    if(feof(fp)) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp);return NULL;}
-    if(readInteger(&tempInt,str) || tempInt<0 ) {loadError("loadBib: Fehler, konnte Anzahl Buecher nicht laden!\n",bib,fp);return NULL;}
+    if (readIntegerFile(fp,&tempInt)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
+    if(feof(fp) && tempInt!=0) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp); return NULL;}
+    if(readInteger(&tempInt,str) || tempInt<0 ) {loadError("loadBib: Fehler, konnte Anzahl Buecher nicht laden!\n",bib,fp); return NULL;}
     buecherCount=tempInt;
+
     //loop Buecher
     for (buecherIndex=0;buecherIndex<buecherCount;buecherIndex++){
         //Titel
-        int len = strlen[str];
-        if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
-        if(feof(fp)) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp);return NULL;}
-        if(len< 1 || len>=MAXBUFFERSIZE) {loadError("loadBib: Fehler, konnte Buchtitel nicht lesen!\n",bib,fp);return NULL;}
-        if (DEBUG_MODE>1) printf("Titel eingelesen: '%s'", str);
-        if (str[len-1]!='\n') { //Letztes Zeichen im String auf NewLine setzen
-            if (DEBUG_MODE>1) printf("Letztes Zeichen im String nicht \\n, wird ersetzt '%s'", str);
-            str[len-1]='\n';
-        }
+        tempBuch = newEmptyBuch();
+        addBuch(bib, tempBuch);
+        if (readStringFile(fp,str) || feof(fp)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
         strcpy(tempBuch->Buchtitel,str);
-
         //Author
-        if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
-
+        if (readStringFile(fp,str) || feof(fp)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
+        strcpy(tempBuch->Buchtitel,str);
         //ISBN
-        if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
-
+        if (readISBNFile(fp,&(tempBuch->ISBN)) || feof(fp)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
         //Anz Exemplare
-
+        if (readIntegerFile(fp,&(tempBuch->AnzahlExemplare)) || feof(fp)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
         //Anz Ausleiher
-
+        if (readIntegerFile(fp,&auslCount) || feof(fp)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
         //loop Ausleiher
-
+        for (auslIndex=0;auslIndex<auslCount;auslIndex++){
+            if (readStringFile(fp,str) || (feof(fp) && /* TODO:CHECK EQ*/ auslIndex+1<auslCount)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
+            checkOutBuch(fp,str);
+        }
+        return bib;
     }
-
-
     fclose(fp);
-
     return(0);
 }
 
@@ -110,7 +102,6 @@ int saveBib(Bibliothek *bib) {
             fputs(tempAusleher->name,fp);
         }
     }
-
 
     if(fclose(fp)) {if (DEBUG_MODE) printf("saveBib: Fehler, konnte Datei nicht schliessen!\n"); return BIBL_ERROR;}
     return BIBL_SUCCESS;

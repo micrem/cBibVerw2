@@ -28,7 +28,7 @@ int readLine(char *buf, FILE* inputStream) {
         return BIBL_ERROR;
     }
     // String zur Sicherheit abschliessen
-    buf[strlen(buf)-1] = '\0';
+    buf[MAXBUFFERSIZE-1] = '\0';
     return BIBL_SUCCESS;
 }
 
@@ -90,10 +90,26 @@ int readInteger(int *intPtr, char *str) {
     return ret;
 }
 
+/**
+ * Liesst naechste Zeile aus Datei als String in buf ein
+ * stellt sicher dass buf mit '\n' abschliesst
+ * @param fp
+ * @param buf
+ * @return
+ */
 int readStringFile(FILE* fp, char* buf){
     int ret = readLine(buf, fp);
-    if (DEBUG_MODE>1) printf("(Eingabe:%s)\n", buf);
-    return ret;
+    int len = 0;
+    if (ret==0 && DEBUG_MODE>1) printf("(Eingabe:%s)\n", buf);
+    if (ret) return ret;
+    len = strlen(buf);
+    if(len<1 || len>=MAXBUFFERSIZE) {if (DEBUG_MODE) printf("Fehler, konnte String nicht aus Datei lesen!\n");return BIBL_ERROR;}
+    if (DEBUG_MODE>1) printf("String aus Datei eingelesen: '%s'", buf);
+    if (buf[len-1]!='\n') { //Letztes Zeichen im String auf NewLine setzen
+        if (DEBUG_MODE>1) printf("Letztes Zeichen im String nicht \\n, wird ersetzt '%s'", buf);
+        buf[len-1]='\n';
+    }
+    return BIBL_SUCCESS;
 }
 
 int readISBNFile(FILE* fp, long long *longlongPtr){

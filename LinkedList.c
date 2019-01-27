@@ -30,7 +30,7 @@ LLNode *getListLastNode(LinkedList *list) {
  * gibt Pointer zur Node mit Index 'index' aus Liste 'list' zurueck oder NULL
  * @param list LinkedList in der gesucht wird
  * @param index Index der Node in der Liste (beginnend mit 0)
- * @return LLNode Pointer zur indizierten Node oder NULL
+ * @return Pointer zur indizierten Node oder NULL
  */
 LLNode *getListNode(LinkedList *list, int index) {
     LLNode *runner=NULL;

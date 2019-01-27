@@ -149,7 +149,7 @@ int freeBuch(Bibliothek *bib, int index) {
     Ausleiher *tempAusl;
     int countAusl = 0;
     int indexAusl = 0;
-    tempBuch = getListData(&(bib->BuecherListe), 0);
+    tempBuch = getListData(&(bib->BuecherListe), index);
     countAusl = tempBuch->ListeAusleiher.length;
     for (indexAusl = 0; indexAusl < countAusl; indexAusl++) {
         tempAusl = getListData(&(tempBuch->ListeAusleiher), 0);

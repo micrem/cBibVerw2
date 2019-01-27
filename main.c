@@ -175,7 +175,10 @@ int test2() {
     printBuch(getBuchByIndex(bib, 2));
     saveBib(bib);
     printf("freebib:%d\n",freeBib(bib));
-    loadBib();
+    bib = loadBib();
+    printf("(any key to continue)\n");
+    getc(stdin);
+    printBibliothek(bib);
     return 0;
 }
 
