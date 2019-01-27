@@ -64,7 +64,7 @@ Bibliothek* loadBib () {
         //loop Ausleiher
         for (auslIndex=0;auslIndex<auslCount;auslIndex++){
             if (readStringFile(fp,str) || (feof(fp) && /* TODO:CHECK EQ*/ auslIndex+1<auslCount)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
-            checkOutBuch(fp,str);
+            checkOutBuch(tempBuch,str);
         }
         return bib;
     }

@@ -174,7 +174,8 @@ int test2() {
     checkOutBuch(getBuchByIndex(bib,2),ausl[2]->name);
     printBuch(getBuchByIndex(bib, 2));
     saveBib(bib);
-    printf("freebib:%d\n",freeBib(bib));
+    if (freeBib(bib)==0) bib=NULL;
+    printf("freebib:%p\n",bib);
     bib = loadBib();
     printf("(any key to continue)\n");
     getc(stdin);
