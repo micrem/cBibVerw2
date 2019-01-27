@@ -49,13 +49,14 @@ Bibliothek* loadBib () {
     //loop Buecher
     for (buecherIndex=0;buecherIndex<buecherCount;buecherIndex++){
         //Titel
+        int len = strlen[str];
         if (readStringFile(fp,str)) {loadError("loadBib: Fehler, konnte aus Datei nicht lesen!\n",bib,fp); return NULL;}
         if(feof(fp)) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp);return NULL;}
-        if(strlen(str)< 1 || strlen(str)>=MAXBUFFERSIZE) {loadError("loadBib: Fehler, konnte Buchtitel nicht lesen!\n",bib,fp);return NULL;}
+        if(len< 1 || len>=MAXBUFFERSIZE) {loadError("loadBib: Fehler, konnte Buchtitel nicht lesen!\n",bib,fp);return NULL;}
         if (DEBUG_MODE>1) printf("Titel eingelesen: '%s'", str);
-        if (str[strlen(str)-1]!='\n') { //Letztes Zeichen im String auf NewLine setzen
-            if (strlen(str)-1<MAXBUFFERSIZE) str[strlen(str)-1]!='\n';
-                    else str[MAXBUFFERSIZE-2]='\n';
+        if (str[len-1]!='\n') { //Letztes Zeichen im String auf NewLine setzen
+            if (DEBUG_MODE>1) printf("Letztes Zeichen im String nicht \\n, wird ersetzt '%s'", str);
+            str[len-1]='\n';
         }
         strcpy(tempBuch->Buchtitel,str);
 
