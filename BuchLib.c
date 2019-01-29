@@ -1,5 +1,6 @@
 #include "BuchLib.h"
 
+
 Buch *newEmptyBuch() {
     Buch *newBuch = malloc(sizeof(Buch));
     if (newBuch == NULL) {
@@ -168,5 +169,54 @@ int freeBuch(Bibliothek *bib, int index) {
     }
     return BIBL_SUCCESS;
 }
+
+/**
+ * Durchsucht Bibliothek nach Buechern bei denen \p searchStr in Titel, Author, ISBN oder einem der Ausleiher auftritt
+ * @param searchStr String nach dem gesucht wird
+ * @param bib Bibliothek in der gesucht wird
+ * @param startIndex Buch-Index ab dem gesucht wird
+ * @return Index vom naechsten gefundenen Buch oder -1
+ */
+int getNextBuchByString(char* searchStr, Bibliothek* bib, int startIndex){
+    LLNode* tempNode = getListNode(&(bib->BuecherListe),startIndex);
+    Buch* tempBuch;
+    char tempStrNeedle[MAXBUFFERSIZE];
+    char tempStrHaystack[MAXBUFFERSIZE];
+    int newIndex=startIndex;
+
+    if (tempNode==NULL) return BIBL_ERROR;
+    //loop buch
+    strToLower(searchStr, tempStrNeedle);
+    do{
+        tempBuch=tempNode->data;
+        strToLower(tempBuch->Buchtitel, tempStrHaystack);
+        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) return newIndex;
+        strToLower(tempBuch->Buchautor, tempStrHaystack);
+        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) return newIndex;
+        sprintf(tempStrHaystack,"%lld",tempBuch->ISBN);
+        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) return newIndex;
+
+        //loop Ausleiher
+        for (int indexAusl=0;indexAusl<tempBuch->ListeAusleiher.length;indexAusl++){
+            strToLower( ((Ausleiher*)getListData(&(tempBuch->ListeAusleiher) ,indexAusl))->name, tempStrHaystack);
+            if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) return newIndex;
+        }
+        tempNode=tempNode->next;
+        newIndex++;
+    } while (tempNode->next!=NULL);
+    return BIBL_ERROR;
+}
+
+
+
+int strToLower(const char *strIn, char *strOut) {
+    if (strIn==NULL ||strOut==NULL) return BIBL_ERROR;
+    for(int i=0; i<MAXBUFFERSIZE;i++){
+        strOut[i]=(char) tolower(strIn[i]);
+    }
+    return BIBL_SUCCESS;
+}
+
+
 
 //!ErrorHasOccured() ??!??! HandleError();

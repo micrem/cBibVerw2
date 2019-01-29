@@ -5,6 +5,8 @@
 
 #include "BuchLibSettings.h"
 #include "LinkedList.h"
+#include "ctype.h"
+#include "BuchLibReadData.h"
 
 
 
@@ -54,6 +56,8 @@ Buch* newEmptyBuch();
 Bibliothek* newEmptyBibliothek();
 Ausleiher* newEmptyAusleiher();
 
+int strToLower(const char* strIn, char* strOut);
 //findBuch?
+int getNextBuchByString(char* searchStr, Bibliothek* bib, int startIndex);
 
 #endif // BUCHLIB_H_INCLUDED

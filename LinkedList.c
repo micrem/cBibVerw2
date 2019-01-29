@@ -26,8 +26,7 @@ LLNode *getListLastNode(LinkedList *list) {
     }
     return runner;
 }
-/** interne Hilfsfunktion
- * gibt Pointer zur Node mit Index 'index' aus Liste 'list' zurueck oder NULL
+/** gibt Pointer zur Node mit Index 'index' aus Liste 'list' zurueck oder NULL
  * @param list LinkedList in der gesucht wird
  * @param index Index der Node in der Liste (beginnend mit 0)
  * @return Pointer zur indizierten Node oder NULL

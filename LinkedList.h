@@ -29,6 +29,6 @@ struct LinkedListS {
 int addListItem(LinkedList* list, void* data);
 int removeListItem(LinkedList* list, int index);
 void* getListData(LinkedList* list, int index);
-
+LLNode *getListNode(LinkedList *list, int index);
 
 #endif // LINKEDLIST_H_INCLUDED
