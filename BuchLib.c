@@ -94,7 +94,7 @@ int printBuch(Buch *buch) {
 }
 
 int printBibliothek(Bibliothek *bibliothek) {
-    if (!bibliothek) return BIBL_ERROR;
+    if (bibliothek==NULL) return BIBL_ERROR;
     printf("Bibliothek:\n");
     int anzBuecher = bibliothek->BuecherListe.length;
     if (anzBuecher == 0) {
@@ -135,7 +135,7 @@ int freeBib(Bibliothek *bib) {
     for (indexBuecher = 0; indexBuecher < countBuecher; indexBuecher++) {
         if (freeBuch(bib, 0)) {
             if (DEBUG_MODE) printf("freeBib: Fehler bei Buchspeicherfreigabe!\n");
-            exit(-1);
+            return BIBL_SEVERE;
         }
     }
     free(bib);
@@ -157,14 +157,14 @@ int freeBuch(Bibliothek *bib, int index) {
         if (removeListItem(&(tempBuch->ListeAusleiher), 0)) {
             if (DEBUG_MODE)
                 printf("freeBuch: Fehler bei Ausleiherspeicherfreigabe!\n");
-            exit(-1);
+            return BIBL_SEVERE;
         }
     }
     free(tempBuch);
     if (removeListItem(&(bib->BuecherListe), 0)) {
         if (DEBUG_MODE)
             printf("freeBuch: Fehler bei Buchspeicherfreigabe!\n");
-        exit(-1);
+        return BIBL_SEVERE;
     }
     return BIBL_SUCCESS;
 }

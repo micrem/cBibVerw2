@@ -14,7 +14,10 @@ int test4();
 
 
 int main() {
-
+    Bibliothek* bib;
+    bib = loadBib();
+    if (bib) printBibliothek(bib);
+    getc(stdin);
     test2();
 
     return 0;
@@ -164,7 +167,7 @@ int test2() {
     }
 
     for(int i = 0;i<3; i++) {
-        buecher[i]->ISBN=i*12345678910;
+        buecher[i]->ISBN=(i+1)*12345678910;
         sprintf(buecher[i]->Buchautor, "AutorNr%d!\n",i+1);
         sprintf(buecher[i]->Buchtitel, "TitelNr%d!\n",i+1);
         buecher[i]->AnzahlExemplare=1+i*2;
@@ -173,13 +176,19 @@ int test2() {
     checkOutBuch(getBuchByIndex(bib,2),ausl[1]->name);
     checkOutBuch(getBuchByIndex(bib,2),ausl[2]->name);
     printBuch(getBuchByIndex(bib, 2));
+    printBibliothek(bib);
     saveBib(bib);
     if (freeBib(bib)==0) bib=NULL;
     printf("freebib:%p\n",bib);
     bib = loadBib();
     printf("(any key to continue)\n");
-    getc(stdin);
+    //getc(stdin);
+    if (!saveBib(bib)) printf("saved\n");
     printBibliothek(bib);
+    freeBib(bib);
+    bib = newEmptyBibliothek();
+    saveBib(bib);
+    //printBibliothek(bib);
     return 0;
 }
 
@@ -195,6 +204,11 @@ int test3() {
 int test4(){
     int i=0;
     char buf[MAXBUFFERSIZE]={0};
-    readStringInput(buf);
+    FILE* fp = fopen(SAVEFILENAME, "r");
+    while (!feof(fp)) {
+        readStringFile(fp, buf);
+        printf("out: %s",buf);
+        printf("------\n");
+    }
     return 0;
 }

@@ -5,9 +5,15 @@
 #include "BuchLibReadData.h"
 #include <limits.h>
 #include <errno.h>
+/**
+ *
+ * Erreichen von EOF wird als Erfolg gewertet/wiedergegeben!
+ * erwartet dass jede Zeile mit '\n' abschliesst
+ * @param buf speichert Ergebniss
+ * @param inputStream Quelle fuer Text
+ * @return BIBL_ERROR oder BIBL_SUCCESS(=0)
+ */
 
-//returns success on EOF!
-//expects \n in every line!
 int readLine(char *buf, FILE* inputStream) {
     int charBuffer;
 
@@ -42,15 +48,14 @@ int readNumber( long long* longlongPtr, const char* str, long long minVal, long 
     if (i==MAXBUFFERSIZE) {if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, String nicht terminiert!\n"); return BIBL_ERROR;}
     errno=0;
     *longlongPtr = strtoll(str, &lastChar, 10);
-    if (lastChar != str+strlen(str)) {
+    if (lastChar != str+strlen(str)-1) {
         if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen\n");
         return BIBL_ERROR;
     }
     if (DEBUG_MODE>1) printf("(Eingabe:%lld)\n", *longlongPtr);
     if (DEBUG_MODE>1) printf("(errno:%d)\n", errno);
-    if ( (*longlongPtr < minVal || *longlongPtr > maxVal)
-        || (errno != 0 && *longlongPtr == 0)
-        || (*longlongPtr>=LLONG_MAX || *longlongPtr <= LLONG_MIN) )
+    if ( (*longlongPtr < minVal || *longlongPtr > maxVal) //falls ausserhalb Definitionsbereich
+        || (errno != 0) )//oder Fehler beim Einlesen bzw. "out-of-bounds"
     {
         if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen! (Wertebereich: %lld bis %lld)\n",minVal,maxVal);
         return BIBL_ERROR;
@@ -102,9 +107,9 @@ int readStringFile(FILE* fp, char* buf){
     int len = 0;
     if (ret==0 && DEBUG_MODE>1) printf("(Eingabe:%s)\n", buf);
     if (ret) return ret;
-    len = strlen(buf);
+    len = (int) strlen(buf);
     if(len<1 || len>=MAXBUFFERSIZE) {if (DEBUG_MODE) printf("Fehler, konnte String nicht aus Datei lesen!\n");return BIBL_ERROR;}
-    if (DEBUG_MODE>1) printf("String aus Datei eingelesen: '%s'", buf);
+    if (DEBUG_MODE>1) printf("String aus Datei eingelesen: %s", buf);
     if (buf[len-1]!='\n') { //Letztes Zeichen im String auf NewLine setzen
         if (DEBUG_MODE>1) printf("Letztes Zeichen im String nicht \\n, wird ersetzt '%s'", buf);
         buf[len-1]='\n';
