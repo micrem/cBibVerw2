@@ -19,4 +19,6 @@ add_executable(BibVerwaltung
         main.c
         BuchLibReadData.c
         BuchLibReadData.h
+        BuchLibMenu.c
+        BuchLibMenu.h
         )
