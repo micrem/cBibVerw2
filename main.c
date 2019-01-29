@@ -14,11 +14,8 @@ int test4();
 
 
 int main() {
-    Bibliothek* bib;
-    bib = loadBib();
-    if (bib) printBibliothek(bib);
-    getc(stdin);
-    test2();
+
+    test4();
 
     return 0;
 
@@ -179,15 +176,14 @@ int test2() {
     printBibliothek(bib);
     saveBib(bib);
     if (freeBib(bib)==0) bib=NULL;
-    printf("freebib:%p\n",bib);
+    printf("freebib:%p\n",(void*)bib);
     bib = loadBib();
     printf("(any key to continue)\n");
     //getc(stdin);
     if (!saveBib(bib)) printf("saved\n");
     printBibliothek(bib);
     freeBib(bib);
-    bib = newEmptyBibliothek();
-    saveBib(bib);
+
     //printBibliothek(bib);
     return 0;
 }
@@ -202,13 +198,9 @@ int test3() {
 }
 
 int test4(){
-    int i=0;
-    char buf[MAXBUFFERSIZE]={0};
-    FILE* fp = fopen(SAVEFILENAME, "r");
-    while (!feof(fp)) {
-        readStringFile(fp, buf);
-        printf("out: %s",buf);
-        printf("------\n");
-    }
-    return 0;
+Bibliothek* bib;
+bib = loadBib();
+printBibliothek(bib);
+getc(stdin);
+return 0;
 }
