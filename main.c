@@ -200,7 +200,8 @@ int test3() {
 int test4(){
 Bibliothek* bib;
 bib = loadBib();
-printBibliothek(bib);
+if (bib!=NULL) printBibliothek(bib);
+printf("(enter)\n");
 getc(stdin);
 return 0;
 }

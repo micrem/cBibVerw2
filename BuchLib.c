@@ -139,7 +139,7 @@ int freeBib(Bibliothek *bib) {
         }
     }
     free(bib);
-    bib = NULL;
+    if (DEBUG_MODE) printf("(freeBib: Bibliothek geloescht!)\n");
     return BIBL_SUCCESS;
 }
 
