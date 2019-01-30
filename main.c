@@ -5,6 +5,7 @@
 #include "BuchLib.h"
 #include "BuchLibReadData.h"
 #include "BuchLibLoadSave.h"
+#include "BuchLibMenu.h"
 
 int test1();
 int test2();
@@ -14,9 +15,12 @@ int test4();
 
 
 int main() {
+    char tempMenuStr[][MAXBUFFERSIZE] = {{"test!"},{"test2"},{""}};
 
-    test3();
 
+    printf("t:%s\n",tempMenuStr[1]);
+    //test3();
+    printf("menu: %d", getMenuSelection(tempMenuStr));
     return 0;
 
 }

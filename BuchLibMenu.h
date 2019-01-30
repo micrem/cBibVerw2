@@ -2,7 +2,14 @@
  * @file Funktionen zur Menuverwaltung
  */
 
+#ifndef BUCHLIBMENU_H_INCLUDED
+#define BUCHLIBMENU_H_INCLUDED
 
-int strcompcase(const char* str1, const char* str2);
+#include "BuchLib.h"
+#include "BuchLibReadData.h"
+#include "BuchLibLoadSave.h"
 
+int getMenuSelection(char text[][MAXBUFFERSIZE]);
+
+#endif //BUCHLIBMENU_H_INCLUDED
 

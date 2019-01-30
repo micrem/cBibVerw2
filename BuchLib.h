@@ -6,9 +6,6 @@
 #include "BuchLibSettings.h"
 #include "LinkedList.h"
 #include "ctype.h"
-#include "BuchLibReadData.h"
-
-
 
 struct BibliothekS {
     LinkedList BuecherListe;
