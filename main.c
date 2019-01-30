@@ -13,14 +13,73 @@ int test3();
 int test4();
 
 
+void menu_1(){
+    int end = 0;
+    do{
+        switch (getMenuSelection(menu1_text)) {
+            case 0:
+                end=1;
+                break;
+            case 1:
+                printf("%s\n",menu1_text[0]);
+                break;
+            case 2:
+                printf("%s\n",menu1_text[1]);
+                break;
+            case 3:
+                printf("%s\n",menu1_text[2]);
+                break;
+            default:
+                break;
+        };
+    }while(!end);
+}
+
+void menu_2(){
+    int end = 0;
+    do {
+        switch (getMenuSelection(menu2_text)) {
+            case 0:
+                end = 1;
+                break;
+            case 1:
+                printf("%s\n", menu2_text[0]);
+                break;
+            case 2:
+                printf("%s\n", menu2_text[1]);
+                break;
+            case 3:
+                printf("%s\n", menu2_text[2]);
+                break;
+            default:
+                break;
+        };
+    }while(!end);
+}
 
 int main() {
-    char tempMenuStr[][MAXBUFFERSIZE] = {{"test!"},{"test2"},{""}};
 
+    Bibliothek *bib=loadBib();
+    if (bib==NULL) bib = newEmptyBibliothek();
+    int end=0;
+    do{
+        switch (getMenuSelection(main_menu_text)) {
+            case 0:
+                end=1;
+                break;
+            case 1:
+                menu_1();
+                break;
+            case 2:
+                menu_2();
+                break;
+            default:
+                break;
+        }
+    }while(!end);
 
-    printf("t:%s\n",tempMenuStr[1]);
-    //test3();
-    printf("menu: %d", getMenuSelection(tempMenuStr));
+    printf("enter to end");
+    getc(stdin);
     return 0;
 
 }

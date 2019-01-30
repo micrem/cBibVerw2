@@ -9,7 +9,14 @@
 #include "BuchLibReadData.h"
 #include "BuchLibLoadSave.h"
 
-int getMenuSelection(char text[][MAXBUFFERSIZE]);
+int getMenuSelection(char menu_text[][MAXBUFFERSIZE]);
+
+extern char main_menu_text[][MAXBUFFERSIZE];
+
+extern char menu1_text[][MAXBUFFERSIZE];
+
+extern char menu2_text[][MAXBUFFERSIZE];
+
 
 #endif //BUCHLIBMENU_H_INCLUDED
 

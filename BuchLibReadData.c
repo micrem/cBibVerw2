@@ -1,11 +1,8 @@
-//
-// Created by user64 on 23/12/2018.
-//
-
 #include "BuchLibReadData.h"
 #include <limits.h>
 #include <errno.h>
 /**
+ * @brief liesst maximal MAXBUFFERSIZE-1 chars ein (inklusive '\n') und terminiert Buffer mit '\0'
  *
  * Erreichen von EOF wird als Erfolg gewertet/wiedergegeben!
  * erwartet dass jede Zeile mit '\n' abschliesst
@@ -13,7 +10,6 @@
  * @param inputStream Quelle fuer Text
  * @return BIBL_ERROR oder BIBL_SUCCESS(=0)
  */
-
 int readLine(char *buf, FILE* inputStream) {
     int charBuffer;
 
@@ -24,10 +20,11 @@ int readLine(char *buf, FILE* inputStream) {
         if(DEBUG_MODE ) printf("readLine: Fehler beim Aufruf von fgets, konnte Zeile nicht einlesen!\n");
         return BIBL_ERROR; //keine Eingabe
     }
+    //TODO: check string for illegal chars before \0
     // Falls Eingabe zu lang (=vorletztes Zeichen nicht '\n'), Eingabebuffer leeren
     if (buf[strlen(buf)-1] != '\n') {
         if (DEBUG_MODE) printf("readLine:buffer nicht leer\n");
-        while ( ((charBuffer = fgetc(inputStream)) != '\n')  && (charBuffer != EOF)) {//EOF fuer FILE*, nicht fuer stdin
+        while ( ((charBuffer = fgetc(inputStream)) != '\n')  && (charBuffer != EOF)) {
             if (DEBUG_MODE>1) printf("readLine:leere buffer:%d\n",charBuffer);
         }
         if (DEBUG_MODE>1) printf("readLine:buffer geleert\n");
@@ -48,7 +45,7 @@ int readNumber( long long* longlongPtr, const char* str, long long minVal, long 
     if (i==MAXBUFFERSIZE) {if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, String nicht terminiert!\n"); return BIBL_ERROR;}
     errno=0;
     *longlongPtr = strtoll(str, &lastChar, 10);
-    if (lastChar != str+strlen(str)-1) {
+    if (lastChar != &str[strlen(str)-1]) {
         if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen\n");
         return BIBL_ERROR;
     }
