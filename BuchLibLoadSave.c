@@ -1,7 +1,3 @@
-//
-// Created by user64 on 02/01/2019.
-//
-
 #include "BuchLibLoadSave.h"
 
 //interne Hilfsfunktion

@@ -1,7 +1,3 @@
-//
-// Created by user64 on 23/12/2018.
-//
-
 #ifndef READDATA_H_INCLUDED
 #define READDATA_H_INCLUDED
 
