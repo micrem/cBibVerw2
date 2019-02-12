@@ -11,11 +11,13 @@
 
 int getMenuSelection(char menu_text[][MAXBUFFERSIZE]);
 
-extern char main_menu_text[][MAXBUFFERSIZE];
-
-extern char menu1_text[][MAXBUFFERSIZE];
-
-extern char menu2_text[][MAXBUFFERSIZE];
+void main_menu(Bibliothek* bib);
+void menu1_auswahl(Bibliothek* bib);
+void menu12_ausleihen(Buch* buch);
+void menu13_zurueckgeben(Buch* buch);
+void menu14_bearbeiten(Buch* buch);
+void menu2_buchneu(Bibliothek* bib);
+int menu_confirm();
 
 
 #endif //BUCHLIBMENU_H_INCLUDED

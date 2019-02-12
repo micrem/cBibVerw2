@@ -46,23 +46,51 @@ int addBuch(Bibliothek *bibliothek, Buch *buch) {
     return addListItem(&(bibliothek->BuecherListe), buch);
 }
 
-int checkInBuch(Buch *buch, const char *ausleiherName) {
+int removeBuch(Bibliothek* bib, int buchIndex){
+    //fehlerchecks
+    if (!bib || buchIndex<0 ) {
+        if (DEBUG_MODE)printf("addBuch() Fehler: NULL-Parameter\n");
+        return BIBL_ERROR;
+    }
+    return removeListNode(&(bib->BuecherListe), buchIndex);
+}
+
+int checkInBuchByName(Buch *buch, const char *ausleiherName) {
     if (buch == NULL) {
-        if (DEBUG_MODE)printf("checkInBuch() Fehler: NULL-Parameter\n");
+        if (DEBUG_MODE)printf("checkInBuchByName() Fehler: NULL-Parameter\n");
         return BIBL_ERROR;
     }
     if (buch->AnzahlExemplare == 0 || buch->ListeAusleiher.length == 0) {
-        if (DEBUG_MODE)printf("checkInBuch() Fehler: Buch hat keine Exemplare/Ausleiher!\n");
+        if (DEBUG_MODE)printf("checkInBuchByName() Fehler: Buch hat keine Exemplare/Ausleiher!\n");
         return BIBL_ERROR; //Buch hat keine Exemplare, man kann nichts zurueckgeben
     }
     int ausleiherIndex = getAusleiherIndexByName(&(buch->ListeAusleiher), ausleiherName);
     if (ausleiherIndex < 0) {
-        if (DEBUG_MODE) printf("checkInBuch: Fehler, konnte Ausleiher nicht finden!\n");
+        if (DEBUG_MODE) printf("checkInBuchByName: Fehler, konnte Ausleiher nicht finden!\n");
         return BIBL_ERROR;
     }
     Ausleiher *ptrAusleiherToRemove = getListData(&(buch->ListeAusleiher), ausleiherIndex);
     free(ptrAusleiherToRemove);
-    removeListItem(&(buch->ListeAusleiher), ausleiherIndex);
+    removeListNode(&(buch->ListeAusleiher), ausleiherIndex);
+    return BIBL_SUCCESS;
+}
+
+int checkInBuchByIndex(Buch *buch, int auslIndex) {
+    if (buch == NULL) {
+        if (DEBUG_MODE)printf("checkInBuchByIndex() Fehler: NULL-Parameter\n");
+        return BIBL_ERROR;
+    }
+    if (buch->AnzahlExemplare == 0 || buch->ListeAusleiher.length == 0) {
+        if (DEBUG_MODE)printf("checkInBuchByIndex() Fehler: Buch hat keine Exemplare/Ausleiher!\n");
+        return BIBL_ERROR; //Buch hat keine Exemplare, man kann nichts zurueckgeben
+    }
+    if (auslIndex < 0) {
+        if (DEBUG_MODE) printf("checkInBuchByIndex: Fehler, konnte Ausleiher nicht finden!\n");
+        return BIBL_ERROR;
+    }
+    Ausleiher *ptrAusleiherToRemove = getListData(&(buch->ListeAusleiher), auslIndex);
+    free(ptrAusleiherToRemove);
+    removeListNode(&(buch->ListeAusleiher), auslIndex);
     return BIBL_SUCCESS;
 }
 
@@ -88,7 +116,7 @@ int printBuch(Buch *buch) {
         printf("(keine Ausleiher)\n");
     }
     for (int i = 0; i < buch->ListeAusleiher.length; i++) {
-        printf("\t%s", (char *) getListData(&(buch->ListeAusleiher), i));
+        printf("\t%d)%s", i, (char *) getListData(&(buch->ListeAusleiher), i));
     }
     printf("\n");
     return BIBL_SUCCESS;
@@ -155,14 +183,14 @@ int freeBuch(Bibliothek *bib, int index) {
     for (indexAusl = 0; indexAusl < countAusl; indexAusl++) {
         tempAusl = getListData(&(tempBuch->ListeAusleiher), 0);
         free(tempAusl);
-        if (removeListItem(&(tempBuch->ListeAusleiher), 0)) {
+        if (removeListNode(&(tempBuch->ListeAusleiher), 0)) {
             if (DEBUG_MODE)
                 printf("freeBuch: Fehler bei Ausleiherspeicherfreigabe!\n");
             return BIBL_SEVERE;
         }
     }
     free(tempBuch);
-    if (removeListItem(&(bib->BuecherListe), 0)) {
+    if (removeListNode(&(bib->BuecherListe), 0)) {
         if (DEBUG_MODE)
             printf("freeBuch: Fehler bei Buchspeicherfreigabe!\n");
         return BIBL_SEVERE;
@@ -174,37 +202,43 @@ int freeBuch(Bibliothek *bib, int index) {
  * Durchsucht Bibliothek nach Buechern bei denen \p searchStr in Titel, Author, ISBN oder einem der Ausleiher auftritt
  * @param searchStr String nach dem gesucht wird
  * @param bib Bibliothek in der gesucht wird
- * @param startIndex Buch-Index ab dem gesucht wird
- * @return Index vom naechsten gefundenen Buch oder -1
+ * @param searchIndex Pointer zum Buch-Index ab dem gesucht wird, schreibt neuen Index
+ * @return Buch-Pointer zum naechsten gefundenen Buch oder NULL
  */
-int getNextBuchByString(char* searchStr, Bibliothek* bib, int startIndex){
-    LLNode* tempNode = getListNode(&(bib->BuecherListe),startIndex);
+Buch * getNextBuchByString(char *searchStr, Bibliothek *bib, int *searchIndex){
+    LLNode* tempNode = getListNode(&(bib->BuecherListe),*searchIndex);
     Buch* tempBuch;
     char tempStrNeedle[MAXBUFFERSIZE];
     char tempStrHaystack[MAXBUFFERSIZE];
-    int newIndex=startIndex;
+    int newIndex=*searchIndex;
+    int found=0;
 
-    if (tempNode==NULL) return BIBL_ERROR;
+    if (tempNode==NULL) return NULL;
     //loop buch
+    if(searchStr[strnlen(searchStr,MAXBUFFERSIZE)-1]=='\n')
+        searchStr[strnlen(searchStr,MAXBUFFERSIZE)-1]='\0';
     strToLower(searchStr, tempStrNeedle);
     do{
         tempBuch=tempNode->data;
         strToLower(tempBuch->Buchtitel, tempStrHaystack);
-        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) return newIndex;
+        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) found=1;
         strToLower(tempBuch->Buchautor, tempStrHaystack);
-        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) return newIndex;
+        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) found=1;
         sprintf(tempStrHaystack,"%lld",tempBuch->ISBN);
-        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) return newIndex;
-
+        if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) found=1;
         //loop Ausleiher
         for (int indexAusl=0;indexAusl<tempBuch->ListeAusleiher.length;indexAusl++){
             strToLower( ((Ausleiher*)getListData(&(tempBuch->ListeAusleiher) ,indexAusl))->name, tempStrHaystack);
-            if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) return newIndex;
+            if (strstr(tempStrHaystack, tempStrNeedle)!=NULL) found=1;
+        }
+        if (found){
+            *searchIndex=newIndex;
+            return tempBuch;
         }
         tempNode=tempNode->next;
         newIndex++;
-    } while (tempNode->next!=NULL);
-    return BIBL_ERROR;
+    } while (tempNode!=NULL);
+    return NULL;
 }
 
 
@@ -212,11 +246,8 @@ int getNextBuchByString(char* searchStr, Bibliothek* bib, int startIndex){
 int strToLower(const char *strIn, char *strOut) {
     if (strIn==NULL ||strOut==NULL) return BIBL_ERROR;
     for(int i=0; i<MAXBUFFERSIZE;i++){
-        strOut[i]=(char) tolower(strIn[i]);
+        strOut[i]=(char)tolower(strIn[i]);
     }
     return BIBL_SUCCESS;
 }
 
-
-
-//!ErrorHasOccured() ??!??! HandleError();

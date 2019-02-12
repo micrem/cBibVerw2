@@ -30,8 +30,9 @@ typedef struct BibliothekS Bibliothek;
 typedef struct AusleiherS Ausleiher;
 
 int addBuch(Bibliothek* bibliothek, Buch* buch);
-int removeBuch(Bibliothek* bibliothek, int index);
-int checkInBuch(Buch *buch, const char* ausleiherName);
+int removeBuch(Bibliothek* bib, int buchIndex);
+int checkInBuchByIndex(Buch *buch, int auslIndex);
+int checkInBuchByName(Buch *buch, const char *ausleiherName);
 int checkOutBuch(Buch *buch, const char* ausleiherName);
 
 int getAusleiherIndexByName(LinkedList* ListeAusleiher, const char* ausleiherName);
@@ -55,6 +56,6 @@ Ausleiher* newEmptyAusleiher();
 
 int strToLower(const char* strIn, char* strOut);
 //findBuch?
-int getNextBuchByString(char* searchStr, Bibliothek* bib, int startIndex);
+Buch * getNextBuchByString(char *searchStr, Bibliothek *bib, int *searchIndex);
 
 #endif // BUCHLIB_H_INCLUDED

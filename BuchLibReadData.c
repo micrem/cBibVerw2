@@ -20,7 +20,13 @@ int readLine(char *buf, FILE* inputStream) {
         if(DEBUG_MODE ) printf("readLine: Fehler beim Aufruf von fgets, konnte Zeile nicht einlesen!\n");
         return BIBL_ERROR; //keine Eingabe
     }
-    //TODO: check string for illegal chars before \0
+    //pruefen auf "wide" oder UTF8 chars
+    for(int i=0;i<MAXBUFFERSIZE;i++){
+        if(buf[i]<0 || buf[i]>127){
+            if(DEBUG_MODE) printf("readLine: falscher ASCII-Wert in Eingabe!\n");
+            return BIBL_ERROR;
+        }
+    }
     // Falls Eingabe zu lang (=vorletztes Zeichen nicht '\n'), Eingabebuffer leeren
     if (buf[strlen(buf)-1] != '\n') {
         if (DEBUG_MODE) printf("readLine:buffer nicht leer\n");
@@ -37,16 +43,16 @@ int readLine(char *buf, FILE* inputStream) {
 
 int readNumber( long long* longlongPtr, const char* str, long long minVal, long long maxVal) {
     int i;
-    char* lastChar=NULL;
+    char* lastCharPtr=NULL;
     if (longlongPtr==NULL) {if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, pointer-parameter=NULL!\n"); return BIBL_ERROR;}
     if (str==NULL || *str=='\0') {if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, Parameterfehler!\n"); return BIBL_ERROR;}
     if (minVal>maxVal){if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, Wertebereich falsch definiert!\n"); return BIBL_ERROR;}
     for(i=0; i<MAXBUFFERSIZE;i++) if(str[i]=='\0') break;
     if (i==MAXBUFFERSIZE) {if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen, String nicht terminiert!\n"); return BIBL_ERROR;}
     errno=0;
-    *longlongPtr = strtoll(str, &lastChar, 10);
-    if (lastChar != &str[strlen(str)-1]) {
-        if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl nicht einlesen\n");
+    *longlongPtr = strtoll(str, &lastCharPtr, 10);
+    if (lastCharPtr != &str[strlen(str)-1]) {
+        if (DEBUG_MODE) printf("readNumber Fehler: konnte Zahl in Eingabe nicht eindeutig erkennen\n");
         return BIBL_ERROR;
     }
     if (DEBUG_MODE>1) printf("(Eingabe:%lld)\n", *longlongPtr);

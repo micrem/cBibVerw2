@@ -1,7 +1,13 @@
 #include "BuchLibLoadSave.h"
 
 //interne Hilfsfunktion
-
+/**
+ *
+ * @param errorMsg String mit Fehlernachricht
+ * @param bib
+ * @param fp
+ * @return
+ */
 int loadError(const char* errorMsg, Bibliothek* bib, FILE* fp){
     int ret;
     if (*errorMsg == '\0') errorMsg = "loadBib: Fehler, konnte aus Datei nicht lesen!\n";
@@ -50,7 +56,7 @@ Bibliothek* loadBib () {
     if(tempInt<0) {loadError("loadBib: Fehler, konnte Anzahl Buecher nicht laden!\n",bib,fp); return NULL;}
     buecherCount=tempInt;
 
-    //loop Buecher
+    //Schleife Buecher
     for (buecherIndex=0;buecherIndex<buecherCount;buecherIndex++){
         //neues Buch
         tempBuch = newEmptyBuch();
@@ -67,7 +73,7 @@ Bibliothek* loadBib () {
         if (readIntegerFile(fp,&(tempBuch->AnzahlExemplare)) || feof(fp)) {loadError("",bib,fp); return NULL;}
         //Anz Ausleiher
         if (readIntegerFile(fp,&auslCount) || feof(fp)) {loadError("",bib,fp); return NULL;}
-        //loop Ausleiher
+        //Schleife Ausleiher
         for (auslIndex=0;auslIndex<auslCount;auslIndex++){
             if (readStringFile(fp,str) || (feof(fp) && /* TODO:CHECK EQ*/ auslIndex+1<auslCount)) {loadError("",bib,fp); return NULL;}
             if(checkOutBuch(tempBuch,str)) {loadError("",bib,fp); return NULL;}

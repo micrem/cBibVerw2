@@ -1,16 +1,14 @@
 /**
- * LinkedList
  * @file LinkedList.c
- * Implementiert eine LinkedList mit void-Pointern zu Daten
+ * Implementiert eine LinkedList mit Zugriffsfunktionen
  */
 
 
 #include "LinkedList.h"
 
-
 //interne Hilfsfunktionen
 
-/** interne Hilfsfunktion
+/**
  * gibt Pointer zur letzten Node der Liste 'list' aus oder NULL
  * @param list Pointer zur Liste in der gesucht wird
  * @return Pointer zur letzten Node oder NULL
@@ -21,12 +19,14 @@ LLNode *getListLastNode(LinkedList *list) {
         return NULL;
     }
     LLNode *runner = list->first;
-    while (runner->next != NULL) {
+    while (runner->next != NULL) { //geht iterativ durch alle nodes bis zur Letzten
         runner = runner->next;
     }
     return runner;
 }
-/** gibt Pointer zur Node mit Index 'index' aus Liste 'list' zurueck oder NULL
+
+/**
+ * gibt Pointer zur Node mit Index 'index' aus Liste 'list' zurueck oder NULL
  * @param list LinkedList in der gesucht wird
  * @param index Index der Node in der Liste (beginnend mit 0)
  * @return Pointer zur indizierten Node oder NULL
@@ -34,6 +34,7 @@ LLNode *getListLastNode(LinkedList *list) {
 LLNode *getListNode(LinkedList *list, int index) {
     LLNode *runner=NULL;
     int i = 0;
+    //Fehlerchecks: leerer list-pointer, zu grosser/kleiner Index
     if (list == NULL || index + 1 > list->length || index < 0) {
         if (LLIST_DEBUG_MODE>1) printf("getListNode hat leere Liste oder ungueltigen Index erhalten!\n");
         return NULL;
@@ -46,6 +47,10 @@ LLNode *getListNode(LinkedList *list, int index) {
     return runner;
 }
 
+/**
+ * legt neue leere, initialisierte LLNode mit malloc() an und gibt Pointer darauf wieder
+ * @return Pointer auf neue LLNode, oder NULL bei Fehler
+ */
 LLNode *newEmptyNode() {
     LLNode *new_node=NULL;
     new_node = malloc(sizeof(LLNode));
@@ -58,32 +63,44 @@ LLNode *newEmptyNode() {
     return new_node;
 }
 
-
+/**
+ * fuegt neue Node an Liste 'list' an, mit Pointer auf data vom typ 'void'
+ * @param list liste an die die Daten angefuegt werden
+ * @param data void-Pointer auf Datensatz der in die LinkedList list aufgenommen werden soll
+ * Bei festgestellten schweren Problemen in der Listenstruktur wird Programm beendet!
+ * @return gibt 0 bei Erfolg oder Fehlerwert(!=0) wieder
+ */
 int addListItem(LinkedList *list, void *data) {
     if (LLIST_DEBUG_MODE > 1) printf("addListItem() Beginn: length: %d\n", list->length);
     LLNode *new_node;
     LLNode *old_node;
-
+    //Fehlerchecks: leere Pointer fuer Liste oder Daten
     if (data == NULL || list == NULL) {
         if (LLIST_DEBUG_MODE) printf("addListItem:(data == NULL || list == NULL) \n");
         return -1;
     }
+    //neue Node anlegen
     new_node = newEmptyNode();
-    if (new_node == NULL) {
+    if (new_node == NULL) { //entspricht malloc-Fehler
         if (LLIST_DEBUG_MODE) printf("addListItem: Fehler in newEmptyNode() \n");
         return -1;
     }
+    //Daten zuweisen
     new_node->data = data;
 
     if (list->first == NULL) {
-        list->first = new_node;
+        list->first = new_node;//falls Liste vorher keine Elemente hatte
     } else {
         old_node = getListLastNode(list);
         if (old_node) {
             old_node->next = new_node;
         } else {
+            //sollte nicht vorkommen, da bereits auf Existenz eines Elements geprueft wurde
+            //deutet auf fehlerhaft verlinkte Listenelemente hin
             if (LLIST_DEBUG_MODE) printf("addListItem: schwerer Fehler, Liste inkonsistent\n");
-            return -2;
+            printf("Schwerwiegender Fehler, interne Speicherstruktur inkonsistent, Programm wird beendet!\n(weiter mit Enter)\n");
+            getc(stdin);
+            exit(-1);
         }
     }
     list->length += 1;
@@ -92,13 +109,19 @@ int addListItem(LinkedList *list, void *data) {
 
 }
 
-int removeListItem(LinkedList *list, int index) {
+/**
+ * entfernt Element vom Index index aus LinkedList list
+ * @param list Pointer auf LinkedList aus der ein Element entfernt wird
+ * @param index Index des zu loeschenden Elements
+ * @return gibt 0 bei Erfolg oder Fehlerwert(!=0) wieder
+ */
+int removeListNode(LinkedList *list, int index) {
     LLNode *node_to_delete, *previous, *following;
     node_to_delete = previous = following = NULL;
-
+    //Fehlerchecks: leerer list-Pointer, index 'out-of-bounds', Liste ohne Elemente
     if (list == NULL || index + 1 > list->length || index < 0 || list->length == 0) {
         if (LLIST_DEBUG_MODE)
-            printf("removeListItem() Fehler (index + 1 > list->length || index < 0 || list == NULL || list->length == 0)\n");
+            printf("removeListNode() Fehler (index + 1 > list->length || index < 0 || list == NULL || list->length == 0)\n");
         return -1;
     }
     node_to_delete = getListNode(list, index);
@@ -114,15 +137,15 @@ int removeListItem(LinkedList *list, int index) {
 }
 
 /**
- *
  * @param list
+ * gibt void-Pointer auf Daten des Listen-Elements mit Index index aus LinkedList list zurueck
  * @param index
- * @return
+ * @return void-Pointer auf Daten des gefundenen Elements oder NULL-Pointer
  */
 void *getListData(LinkedList *list, int index) {
-    LLNode *node = getListNode(list, index);
+    LLNode *node = getListNode(list, index); //Uebergabefehler werden in getListNode abgefangen
     if (node == NULL) {
-        if (LLIST_DEBUG_MODE) printf("getListData Fehler: leerer Parameter\n");
+        if (LLIST_DEBUG_MODE) printf("getListData Fehler: falsche Zugriffsparameter\n");
         return NULL;
     }
     return node->data;
