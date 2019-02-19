@@ -137,7 +137,7 @@ void menu1_auswahl(Bibliothek* bib){
                 buchSearchIndex++;
                 buchPtr = getNextBuchByString(searchStr, bib, &buchSearchIndex);
                 if (buchPtr==NULL){
-                    printf("kein weiteres Buch gefunden.\n");
+                    printf("Kein weiteres Buch gefunden.\n");
                     printf("Suche von Vorne beginnen?\n");
                     if(menu_confirm()) buchSearchIndex=0;
                     buchPtr = getNextBuchByString(searchStr, bib, &buchSearchIndex);
@@ -188,7 +188,7 @@ void menu12_ausleihen(Buch* buch){
     };
     if (getMenuSelection(menu12_ausleihen_text)==0) return;
     do{
-        printf("Bitte Ausleiher Namen eingeben:\n");
+        printf("Bitte Ausleiher Namen eingeben (ohne Umlaute):\n");
         ret = readStringInput(auslName);
     } while (ret != BIBL_SUCCESS);
     if(checkOutBuch(buch, auslName)!=BIBL_SUCCESS){
@@ -229,6 +229,7 @@ void menu14_bearbeiten(Buch* buch){
     char tempStr[MAXBUFFERSIZE];
     long long tempLL;
     int tempInt;
+    printf("Buch bearbeiten (bitte alle Angaben ohne Umlaute):\n");
     switch (getMenuSelection(menu14_bearbeiten_text)) {
         case 0:
             end = 1;
@@ -273,6 +274,7 @@ void menu2_buchneu(Bibliothek* bib){
     long long tempLL;
     int tempInt;
     Buch* tempBuch=newEmptyBuch();
+    printf("Neues Buch anlegen (bitte alle Angaben ohne Umlaute):\n");
     //Titel
     do{
         printf("Bitte Titel eingeben:\n");
