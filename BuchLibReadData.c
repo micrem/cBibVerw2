@@ -5,10 +5,11 @@
  * @brief liesst maximal MAXBUFFERSIZE-1 chars ein (inklusive '\n') und terminiert Buffer mit '\0'
  *
  * Erreichen von EOF wird als Erfolg gewertet/wiedergegeben!
- * erwartet dass jede Zeile mit '\n' abschliesst
+ * erwartet dass jede Zeile mit '\n' abschliesst und leert Eingabebuffer bei zu langen Eingaben
+ *
  * @param buf speichert Ergebniss
  * @param inputStream Quelle fuer Text
- * @return BIBL_ERROR oder BIBL_SUCCESS(=0)
+ * @return BIBL_ERROR(<0) oder BIBL_SUCCESS(=0)
  */
 int readLine(char *buf, FILE* inputStream) {
     int charBuffer;
@@ -22,12 +23,14 @@ int readLine(char *buf, FILE* inputStream) {
     }
     //pruefen auf "wide" oder UTF8 chars
     for(int i=0;i<MAXBUFFERSIZE;i++){
-        if(buf[i]<0 ){
-            if(DEBUG_MODE) printf("readLine: falscher ASCII-Wert in Eingabe!\n");
+        if(buf[i]=='\0') break; //String bis Ende scannen
+        if(buf[i]<0){ //falls Char negativen Wert hat, Fehler melden und abbrechen
+            if(DEBUG_MODE) printf("readLine: falscher ASCII-Wert in Eingabe! c:'%c' d:'%d'\n",buf[i],buf[i]);
+            //if(DEBUG_MODE) printf("readLine: falscher ASCII-Wert in Eingabe!\n");
             return BIBL_ERROR;
         }
     }
-    // Falls Eingabe zu lang (=vorletztes Zeichen nicht '\n'), Eingabebuffer leeren
+    // Falls Eingabe zu lang (=vorletztes Zeichen im eingelesenen String nicht '\n'), Reste aus Eingabebuffer leeren
     if (buf[strlen(buf)-1] != '\n') {
         if (DEBUG_MODE) printf("readLine:buffer nicht leer\n");
         while ( ((charBuffer = fgetc(inputStream)) != '\n')  && (charBuffer != EOF)) {
@@ -36,8 +39,6 @@ int readLine(char *buf, FILE* inputStream) {
         if (DEBUG_MODE>1) printf("readLine:buffer geleert\n");
         return BIBL_ERROR;
     }
-    // String zur Sicherheit abschliessen
-    buf[MAXBUFFERSIZE-1] = '\0';
     return BIBL_SUCCESS;
 }
 
@@ -103,7 +104,7 @@ int readInteger(int *intPtr, char *str) {
  * stellt sicher dass buf mit '\n' abschliesst
  * @param fp
  * @param buf
- * @return
+ * @return BIBL_ERROR(<0) oder BIBL_SUCCESS(=0)
  */
 int readStringFile(FILE* fp, char* buf){
     int ret = readLine(buf, fp);
