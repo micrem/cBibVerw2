@@ -6,7 +6,23 @@
 
 #include "LinkedList.h"
 
-//interne Hilfsfunktionen
+//### interne Hilfsfunktionen:
+
+/**
+ * legt neue leere, initialisierte LLNode mit malloc() an und gibt einen Pointer darauf zurueck
+ * @return Pointer auf neue LLNode, oder NULL bei Fehler
+ */
+LLNode *newEmptyNode() {
+    LLNode *new_node=NULL;
+    new_node = malloc(sizeof(LLNode));
+    if (new_node == NULL) {
+        if (LLIST_DEBUG_MODE) printf("newEmptyNode() konnte keinen Speicher anlegen!\n");
+        return NULL;
+    }
+    new_node->data = NULL;
+    new_node->next = NULL;
+    return new_node;
+}
 
 /**
  * gibt Pointer zur letzten Node der Liste 'list' aus oder NULL
@@ -24,6 +40,10 @@ LLNode *getListLastNode(LinkedList *list) {
     }
     return runner;
 }
+//### Ende interne Hilfsfunktionen
+
+
+//### im LinkedList-Header definierte, oeffentlich verfuegbare Funktionen
 
 /**
  * gibt Pointer zur Node mit Index 'index' aus Liste 'list' zurueck oder NULL
@@ -47,21 +67,6 @@ LLNode *getListNode(LinkedList *list, int index) {
     return runner;
 }
 
-/**
- * legt neue leere, initialisierte LLNode mit malloc() an und gibt Pointer darauf wieder
- * @return Pointer auf neue LLNode, oder NULL bei Fehler
- */
-LLNode *newEmptyNode() {
-    LLNode *new_node=NULL;
-    new_node = malloc(sizeof(LLNode));
-    if (new_node == NULL) {
-        if (LLIST_DEBUG_MODE) printf("newEmptyNode() konnte keinen Speicher anlegen!\n");
-        return NULL;
-    }
-    new_node->data = NULL;
-    new_node->next = NULL;
-    return new_node;
-}
 
 /**
  * fuegt neue Node an Liste 'list' an, mit Pointer auf data vom typ 'void'
@@ -151,3 +156,4 @@ void *getListData(LinkedList *list, int index) {
     return node->data;
 }
 
+//### Ende oeffentlich verfuegbare Funktionen

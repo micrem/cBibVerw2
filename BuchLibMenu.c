@@ -154,8 +154,8 @@ void menu1_auswahl(Bibliothek* bib){
                 menu14_bearbeiten(buchPtr);
                 break;
             case 5:
-                if (buchPtr->AnzahlExemplare == buchPtr->ListeAusleiher.length){
-                    printError("Keine freien Exemplare zum Ausleihen vorhanden!");
+                if (buchPtr->AnzahlExemplare != buchPtr->ListeAusleiher.length){
+                    printError("Buch hat noch ausgeliehene Exemplare, konnte Buch nicht entfernen!");
                     break;
                 }
                 printf("Ausgewaehltes Buch entfernen?\n");

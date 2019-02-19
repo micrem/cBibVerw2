@@ -1,8 +1,9 @@
 /**
  * @file LinkedList.h Header fuer LinkedList Implementierung
- * definiert benoetigte Structs und Art des Debug-logging (0-2)
+ * definiert benoetigte Structs und Art des Debug-logging (0-2) speziell fuer LinkedList Fehlermeldungen
  * definiert Zugriff-funktionen sowie Funktionen zum hinzufuegen und loeschen uber Index
  * fuer Pseudo-Kapselung
+ *
  */
 
 #ifndef LINKEDLIST_H_INCLUDED
