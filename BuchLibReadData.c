@@ -22,7 +22,7 @@ int readLine(char *buf, FILE* inputStream) {
     }
     //pruefen auf "wide" oder UTF8 chars
     for(int i=0;i<MAXBUFFERSIZE;i++){
-        if(buf[i]<0 || buf[i]>127){
+        if(buf[i]<0 ){
             if(DEBUG_MODE) printf("readLine: falscher ASCII-Wert in Eingabe!\n");
             return BIBL_ERROR;
         }
