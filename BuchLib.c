@@ -1,8 +1,8 @@
 #include "BuchLib.h"
 
 /**
- * legt neues leeres Buch mit malloc() an und initialisiert alle Variablen auf 0 oder ensprechende Werte.
- * @return Pointer auf neues Buch oder NULL bei Fehler
+ * legt neues leeres Buch mit malloc() an und initialisiert alle Variablen auf 0 oder entsprechende Werte.
+ * @return Pointer auf neues, initialisiertes Buch oder NULL bei Fehler
  */
 Buch *newEmptyBuch() {
     Buch *newBuch = malloc(sizeof(Buch));
@@ -60,7 +60,7 @@ int addBuch(Bibliothek *bib, Buch *buch) {
         if (DEBUG_MODE)printf("addBuch() Fehler: NULL-Parameter\n");
         return BIBL_ERROR;
     }
-    return addListItem(&(bib->BuecherListe), buch); //reicht Fehler aus LinkedList-Funktion weiter
+    return addListItem(&(bib->BuecherListe), buch); //reicht Fehler aus addListItem() weiter
 }
 
 /**
@@ -124,7 +124,7 @@ int checkOutBuch(Buch *buch, const char *ausleiherName) {
 }
 
 /**
- * Buch buch in Konsole ausgeben
+ * Buch buch lesbar in Konsole ausgeben
  * @param buch Pointer auf das Buch das ausgegeben werden soll
  * @return gibt BIBL_SUCCESS bei Erfolg aus oder BIBL_ERROR
  */
@@ -134,11 +134,13 @@ int printBuch(Buch *buch) {
     printf("Autor: %s", buch->Buchautor);
     printf("ISBN: %lld\n", buch->ISBN);
     printf("Exemplare: %d\n", buch->AnzahlExemplare);
+    //falls Ausleiher vorhanden, 'header' ausgeben
     if (buch->ListeAusleiher.length > 0) {
         printf("Ausleiher:\n");
     } else {
         printf("(keine Ausleiher)\n");
     }
+    //Schleife um alle Ausleiher auszugeben, mit index
     for (int i = 0; i < buch->ListeAusleiher.length; i++) {
         printf("\t%d)%s", i, (char *) getListData(&(buch->ListeAusleiher), i));
     }
@@ -168,7 +170,7 @@ int printBibliothek(Bibliothek *bibliothek) {
     }
     return BIBL_SUCCESS;
 }
-//unused
+//veraltet, nicht gebraucht
 /*int getAusleiherIndexByName(LinkedList *ListeAusleiher, const char *ausleiherName) {
     for (int i = 0; i < ListeAusleiher->length; i++) {
         if (!strcmp(getListData(ListeAusleiher, i), ausleiherName)) return i;
@@ -188,7 +190,7 @@ int getAusleiherCount(Bibliothek *bib, int buchIndex) {
     if (bib == NULL || buchIndex > bib->BuecherListe.length || buchIndex < 0) return BIBL_ERROR;
     tempBuch = getBuchByIndex(bib, buchIndex); //Zeiger auf entspr. Buch holen
     if (tempBuch == NULL){
-        if (DEBUG_MODE) printf("getBuchByIndex: Fehler, konnte Buch %d nicht finden!\n", index);
+        if (DEBUG_MODE) printf("getBuchByIndex: Fehler, konnte Buch %d nicht finden!\n", buchIndex);
         return BIBL_ERROR;
     }
     return tempBuch->ListeAusleiher.length;
@@ -197,13 +199,13 @@ int getAusleiherCount(Bibliothek *bib, int buchIndex) {
 /**
  * Gibt Pointer auf Buch aus Bibliothek aus, nach Index
  * @param bib
- * @param index
+ * @param buchIndex
  * @return
  */
-Buch *getBuchByIndex(Bibliothek *bib, int index) {
+Buch *getBuchByIndex(Bibliothek *bib, int buchIndex) {
     Buch *tempBuch;
-    tempBuch = (Buch *) getListData(&(bib->BuecherListe), index);
-    if (tempBuch == NULL && DEBUG_MODE) printf("getBuchByIndex: Fehler, konnte Buch %d nicht finden!\n", index);
+    tempBuch = (Buch *) getListData(&(bib->BuecherListe), buchIndex);
+    if (tempBuch == NULL && DEBUG_MODE) printf("getBuchByIndex: Fehler, konnte Buch %d nicht finden!\n", buchIndex);
     return tempBuch;
 }
 
