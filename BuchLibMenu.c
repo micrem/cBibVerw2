@@ -121,6 +121,9 @@ void menu1_auswahl(Bibliothek* bib){
     int end=0;
     Buch* buchPtr;
 
+    if (bib==NULL ){printError("Noch keine Bibliothek angelegt.");return;}
+    if (bib->BuecherListe.length==0){printError("Keine Buecher in Bibliothek.");return;}
+
     printf("Bitte Suchtext eingeben:\n");
     printf("(Ganz oder Teil von Titel, Author, Ausleiher oder ISBN)\n");
     if (readStringInput(searchStr)!=BIBL_SUCCESS || *searchStr=='\n') {printError("Eingabe nicht erkannt.");return;}
