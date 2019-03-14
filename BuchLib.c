@@ -327,7 +327,7 @@ Buch * getNextBuchByString(char *searchStr, Bibliothek *bib, int *searchIndex){
 int strToLower(const char *strIn, char *strOut) {
     if (strIn==NULL ||strOut==NULL) return BIBL_ERROR;
     for(int i=0; i<MAXBUFFERSIZE;i++){
-        strOut[i]=(char)tolower(strIn[i]);
+        strOut[i]=tolower(strIn[i]); //implizite Konvertierung int->char erlaubt per Definition von tolower()
     }
     return BIBL_SUCCESS;
 }
