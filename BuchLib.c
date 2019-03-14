@@ -5,11 +5,14 @@
  * @return Pointer auf neues, initialisiertes Buch oder NULL bei Fehler
  */
 Buch *newEmptyBuch() {
+    //Buch anlegen
     Buch *newBuch = malloc(sizeof(Buch));
+    //Fehlerchecks
     if (newBuch == NULL) {
         if (DEBUG_MODE)printf("newEmptyBuch() Fehler: konnte neuen Speicher nicht anlegen\n");
         return NULL;
     }
+    //init
     strcpy(newBuch->Buchtitel, "");
     strcpy(newBuch->Buchautor, "");
     newBuch->ISBN = 0;
@@ -24,11 +27,14 @@ Buch *newEmptyBuch() {
  * @return Pointer auf neue Bibliothek oder NULL bei Fehler
  */
 Bibliothek *newEmptyBibliothek() {
+    //Bibliothek anlegen
     Bibliothek *newBibliothek = malloc(sizeof(Bibliothek));
+    //Fehlerchecks
     if (newBibliothek == NULL) {
         if (DEBUG_MODE)printf("newEmptyBibliothek() Fehler: konnte neuen Speicher nicht anlegen\n");
         return NULL;
     }
+    //init
     newBibliothek->BuecherListe.first = NULL;
     newBibliothek->BuecherListe.length = 0;
     return newBibliothek;
@@ -39,17 +45,20 @@ Bibliothek *newEmptyBibliothek() {
  * @return Pointer auf neuen Ausleiher oder NULL bei Fehler
  */
 Ausleiher *newEmptyAusleiher() {
+    //neuen Ausleiher anlegen
     Ausleiher *newAusleiher = malloc(sizeof(Ausleiher));
+    //Fehlerchecks
     if (newAusleiher == NULL) {
         if (DEBUG_MODE)printf("newEmptyBibliothek() Fehler: konnte neuen Speicher nicht anlegen\n");
         return NULL;
     }
+    //init
     strcpy(newAusleiher->name, "");
     return newAusleiher;
 }
 
 /**
- * fuegt zur Bibliothek bib das Buch buch hinzu, mithilfe von LinkedList Zugriffsfunktion addListItem
+ * fuegt zur Bibliothek bib das Buch buch hinzu, mithilfe von LinkedList Zugriffsfunktion addListItem()
  * @param bib Pointer auf Bibliothek in die das buch hinzugefuegt werden soll
  * @param buch Pointer auf das Buch das hinzugefuegt wird
  * @return gibt BIBL_SUCCESS bei Erfolg aus oder BIBL_ERROR

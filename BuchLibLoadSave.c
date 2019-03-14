@@ -23,7 +23,7 @@ int loadError(const char* errorMsg, Bibliothek* bib, FILE* fp){
         if (DEBUG_MODE) printf("Fehler beim loeschen der Bibliothek!\n");
     }
     //Datenstream schliessen
-    fclose(fp);
+    if(fp) fclose(fp);
 
     return BIBL_SUCCESS;
 }
