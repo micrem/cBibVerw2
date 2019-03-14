@@ -59,7 +59,7 @@ Buch* getBuchByIndex(Bibliothek *bib, int index);
 
 
 int freeBib(Bibliothek* bib);
-int freeBuch(Bibliothek* bib, int index);
+int freeBuch(Bibliothek* bib, int buchIndex);
 
 
 int printBuch(Buch* buch);
