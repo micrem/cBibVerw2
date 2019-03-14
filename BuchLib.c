@@ -170,13 +170,6 @@ int printBibliothek(Bibliothek *bibliothek) {
     }
     return BIBL_SUCCESS;
 }
-//veraltet, nicht gebraucht
-/*int getAusleiherIndexByName(LinkedList *ListeAusleiher, const char *ausleiherName) {
-    for (int i = 0; i < ListeAusleiher->length; i++) {
-        if (!strcmp(getListData(ListeAusleiher, i), ausleiherName)) return i;
-    }
-    return BIBL_ERROR;
-}*/
 
 /**
  * Gibt Anzahl der Ausleiher des Buches an Stelle "buchIndex" in Bibliothek bib aus
@@ -262,7 +255,8 @@ int freeBuch(Bibliothek *bib, int index) {
 }
 
 /**
- * Durchsucht Bibliothek nach Buechern bei denen \p searchStr in Titel, Author, ISBN oder einem der Ausleiher auftritt
+ * Durchsucht Bibliothek nach Buechern bei denen \p searchStr in Titel, Author, ISBN oder einem der Ausleiher auftritt,
+ * konvertiert Suche vorher zu lowercase
  * @param searchStr String nach dem gesucht wird
  * @param bib Bibliothek in der gesucht wird
  * @param searchIndex Pointer zum Buch-Index ab dem gesucht wird, schreibt neuen Index
@@ -274,11 +268,11 @@ Buch * getNextBuchByString(char *searchStr, Bibliothek *bib, int *searchIndex){
     char tempStrNeedle[MAXBUFFERSIZE];
     char tempStrHaystack[MAXBUFFERSIZE];
     int newIndex=*searchIndex;
-    int found=0;
+    int found=0; //found-flag, wird auf 1 gesetzt falls searchStr irgendwo im Buch auftaucht
 
     if (tempNode==NULL) return NULL;
     //loop buch
-    if(searchStr[strnlen(searchStr,MAXBUFFERSIZE)-1]=='\n')
+    if(searchStr[strnlen(searchStr,MAXBUFFERSIZE)-1]=='\n') //'Enter' im String mit Terminierung ersetzen
         searchStr[strnlen(searchStr,MAXBUFFERSIZE)-1]='\0';
     strToLower(searchStr, tempStrNeedle);
     do{
@@ -306,9 +300,9 @@ Buch * getNextBuchByString(char *searchStr, Bibliothek *bib, int *searchIndex){
 
 
 /**
- *
- * @param strIn
- * @param strOut
+ * Hilfsfuntion, schreibt zu lowercase konvertierten strIn nach strOut
+ * @param strIn Pointer zum String der Konvertiert wird
+ * @param strOut Pointer zum String in den der neue String geschrieben wird
  * @return gibt BIBL_SUCCESS bei Erfolg aus oder BIBL_ERROR
  */
 int strToLower(const char *strIn, char *strOut) {
