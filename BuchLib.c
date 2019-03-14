@@ -265,7 +265,7 @@ int freeBuch(Bibliothek *bib, int buchIndex) {
         }
     }
     free(tempBuch);
-    if (removeListNode(&(bib->BuecherListe), 0)) {
+    if (removeListNode(&(bib->BuecherListe), buchIndex)) { //mit entsprechender LinkedList-methode Node ebenfalls freigeben
         if (DEBUG_MODE)
             printf("freeBuch: Fehler bei Buchspeicherfreigabe!\n");
         return BIBL_SEVERE;
