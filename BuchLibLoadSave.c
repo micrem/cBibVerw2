@@ -58,7 +58,7 @@ Bibliothek* loadBib () {
     }
 
     //erwartete Anzahl Buecher einlesen
-    //Auf Fehler beim Einlesen, Fehler der Zahl, zu fruehem Dateiende und negativer Anzahl pruefen
+    //pruefen auf Fehler beim Einlesen, zu fruehem Dateiende und negativer Anzahl
     if(readIntegerFile(fp,&tempInt)) {loadError("loadBib: Fehler, konnte Zeile aus Datei nicht lesen!\n",bib,fp); return NULL;}
     if(feof(fp) && tempInt!=0) {loadError("loadBib: Fehler, Datei zu kurz!\n",bib,fp); return NULL;}
     if(tempInt<0) {loadError("loadBib: Fehler, konnte Anzahl Buecher nicht laden!\n",bib,fp); return NULL;}
