@@ -1,6 +1,7 @@
 /**
  * @file LinkedList.c
- * Implementiert eine LinkedList mit Zugriffsfunktionen
+ * Implementiert eine "Singly linked list" LinkedList mit Zugriffsfunktionen,
+ * beliebige Daten werden als void* in Nodes hinterlegt
  */
 
 
@@ -19,6 +20,7 @@ LLNode *newEmptyNode() {
         if (LLIST_DEBUG_MODE) printf("newEmptyNode() konnte keinen Speicher anlegen!\n");
         return NULL;
     }
+    //init
     new_node->data = NULL;
     new_node->next = NULL;
     return new_node;

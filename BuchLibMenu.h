@@ -1,5 +1,5 @@
 /**
- * @file Funktionen zur Menuverwaltung
+ * @file BuchLobMenu.h Funktionen zur Menuverwaltung
  */
 
 #ifndef BUCHLIBMENU_H_INCLUDED
