@@ -1,3 +1,9 @@
+/**
+ * @file BuchLib.c
+ * Implementiert Bibliothek und Buecher Listen/Funktionen/Structs auf Basis von LinkedList. Nutzt BuchLibSettings.h fuer
+ * Konfiguration. Maximale Groesse aller verwendeten Strings wird in der Konfiguration festgelegt.
+ */
+
 #include "BuchLib.h"
 
 /**

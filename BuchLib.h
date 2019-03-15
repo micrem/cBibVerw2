@@ -1,7 +1,8 @@
 /**
  * @file BuchLib.h
+ * @brief Header der BuchLib
  * Implementiert Bibliothek und Buecher Listen/Funktionen/Structs auf Basis von LinkedList. Nutzt BuchLibSettings.h fuer
- * Konfiguration. Maximale groesse aller verwendeten Strings wird in der Konfiguration festgelegt.
+ * Konfiguration. Maximale Groesse aller verwendeten Strings wird in der Konfiguration festgelegt.
  *
  */
 
@@ -31,7 +32,7 @@ struct AusleiherS {
 
 /**
  * @brief Struct dass ein Buch darstellt, mit ISBN als long long int,
- * Titel und Author als Strings, Anzahl der Exemplare und einer LinkedList die Ausleiher enthaelt
+ * Titel und Author als Strings fester Laenge, Anzahl der Exemplare und einer LinkedList die Ausleiher enthaelt
  */
 struct BuchS {
     long long ISBN;
