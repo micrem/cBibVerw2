@@ -128,7 +128,7 @@ void main_menu(Bibliothek* bib){
                 break;
         };
     }while(!end);
-    //freebib optional
+    //freebib() optional, Programmende
 }
 
 void menu1_auswahl(Bibliothek* bib){
