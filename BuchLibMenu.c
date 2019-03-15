@@ -104,12 +104,16 @@ void main_menu(Bibliothek* bib){
                 if (freeBib(bib)==BIBL_SEVERE){
                     printMsgConfirm(
                             "Schwerwiegender Speicherfehler, unvollstaendige Bilbiothek konnte nicht aus Speicher entfernt werden.\nProgramm wird beendet!");
-                    return;
+                    printf("(Enter zum Beenden)");
+                    getc(stdin);
+                    exit(-1);
                 }
                 bib = loadBib();
                 if (bib==NULL){
                     printf("Bibliothek konnte nicht geladen werden!\n Leere Bibliothek wird angelegt.\n");
                     bib = newEmptyBibliothek();
+                } else {
+                    printMsgConfirm("Bibliothek wurde erfolgreich geladen!");
                 }
                 break;
             case 5:
