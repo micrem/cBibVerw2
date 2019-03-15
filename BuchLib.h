@@ -52,7 +52,6 @@ int removeBuch(Bibliothek* bib, int buchIndex);
 int checkInBuchByIndex(Buch *buch, int auslIndex);
 int checkOutBuch(Buch *buch, const char* ausleiherName);
 
-//unused //int getAusleiherIndexByName(LinkedList* ListeAusleiher, const char* ausleiherName);
 int getAusleiherCount(Bibliothek *bib, int buchIndex);
 
 Buch* getBuchByIndex(Bibliothek *bib, int index);
