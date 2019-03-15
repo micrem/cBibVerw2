@@ -83,7 +83,7 @@ void main_menu(Bibliothek* bib){
             case 0:
                 end = 1;
                 printf("Bibliothen vor Beenden speichern?\n");
-                if(menu_confirm()==1){
+                if(menu_confirm()){
                     if(saveBib(bib)!=BIBL_SUCCESS){
                         printMsgConfirm("Bibliothek konnte nicht gespeichert werden!");
                     }else {
@@ -169,7 +169,7 @@ void menu1_auswahl(Bibliothek* bib){
                 menu14_bearbeiten(buchPtr);
                 break;
             case 5:
-                if (buchPtr->AnzahlExemplare != buchPtr->ListeAusleiher.length){
+                if (buchPtr->ListeAusleiher.length > 0){
                     printMsgConfirm("Buch hat noch ausgeliehene Exemplare, konnte Buch nicht entfernen!");
                     break;
                 }
