@@ -14,7 +14,7 @@
 // 0 = keine Debug-Nachrichten
 // 1 = normal
 // 2 = verbos
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
 // Fehlercodes
 #define BIBL_SEVERE (-2)

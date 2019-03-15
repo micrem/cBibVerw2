@@ -240,14 +240,13 @@ void menu13_zurueckgeben(Buch* buch){
 
 void menu14_bearbeiten(Buch* buch){
     //select menu14
-    int end=0;
+
     char tempStr[MAXBUFFERSIZE];
     long long tempLL;
     int tempInt;
     printf("Buch bearbeiten (bitte alle Angaben ohne Umlaute):\n");
     switch (getMenuSelection(menu14_bearbeiten_text)) {
-        case 0:
-            end = 1;
+        case 0: //Abbrechen
             break;
         case 1: //Titel
             do{
