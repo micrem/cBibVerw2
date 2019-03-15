@@ -1,3 +1,8 @@
+/**
+ * @file BuchLibLoadSave.c
+ * Implementiert Bibliothek Laden aus Datei und Speicher in Datei
+ */
+
 #include "BuchLibLoadSave.h"
 
 /**

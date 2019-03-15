@@ -1,3 +1,8 @@
+/**
+ * @file BuchLibLoadSave.h
+ * Header fuer Implementierung Bibliothek Laden aus Datei und Speicher in Datei
+ */
+
 #ifndef LOADSAVE_H_INCLUDED
 #define LOADSAVE_H_INCLUDED
 

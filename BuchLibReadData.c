@@ -1,3 +1,7 @@
+/**
+ * @file
+ */
+
 #include "BuchLibReadData.h"
 #include <limits.h>
 #include <errno.h>
