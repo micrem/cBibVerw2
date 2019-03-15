@@ -5,7 +5,7 @@ char main_menu_text[][MAXBUFFERSIZE]= {
         {"Buch auswaehlen"},
         {"Buch neu anlegen"},
         {"Bibliothek anzeigen"},
-        {"Bibliothek neu laden"},
+        {"Bibliothek neu aus Datei laden (nichtgespeicherte Aenderungen gehen verloren)"},
         {"Bibliothek speichern"},
         {""}
 };
@@ -50,7 +50,7 @@ void waitUntilEnter(){
     readStringInput(buf);
 }
 
-void printError(char message[MAXBUFFERSIZE]){
+void printMsgConfirm(char *message){
     printf("%s\n",message);
     waitUntilEnter();
 }
@@ -82,6 +82,14 @@ void main_menu(Bibliothek* bib){
         switch (getMenuSelection(main_menu_text)) {
             case 0:
                 end = 1;
+                printf("Bibliothen vor Beenden speichern?\n");
+                if(menu_confirm()==1){
+                    if(saveBib(bib)!=BIBL_SUCCESS){
+                        printMsgConfirm("Bibliothek konnte nicht gespeichert werden!");
+                    }else {
+                        printMsgConfirm("Bibliothek wurde erfolgreich gespeichert!");
+                    };
+                };
                 break;
             case 1:
                 menu1_auswahl(bib);
@@ -94,7 +102,8 @@ void main_menu(Bibliothek* bib){
                 break;
             case 4:
                 if (freeBib(bib)==BIBL_SEVERE){
-                    printError("Schwerwiegender Speicherfehler, unvollstaendige Bilbiothek konnte nicht aus Speicher entfernt werden.\nProgramm wird beendet!");
+                    printMsgConfirm(
+                            "Schwerwiegender Speicherfehler, unvollstaendige Bilbiothek konnte nicht aus Speicher entfernt werden.\nProgramm wird beendet!");
                     return;
                 }
                 bib = loadBib();
@@ -105,13 +114,16 @@ void main_menu(Bibliothek* bib){
                 break;
             case 5:
                 if(saveBib(bib)!=BIBL_SUCCESS){
-                    printError("Bibliothek konnte nicht gespeichert werden!");
+                    printMsgConfirm("Bibliothek konnte nicht gespeichert werden!");
+                }else {
+                    printMsgConfirm("Bibliothek wurde erfolgreich gespeichert!");
                 };
+
+
             default:
                 break;
         };
     }while(!end);
-    //save optional?
     //freebib optional
 }
 
@@ -121,14 +133,14 @@ void menu1_auswahl(Bibliothek* bib){
     int end=0;
     Buch* buchPtr;
 
-    if (bib==NULL ){printError("Noch keine Bibliothek angelegt.");return;}
-    if (bib->BuecherListe.length==0){printError("Keine Buecher in Bibliothek.");return;}
+    if (bib==NULL ){ printMsgConfirm("Noch keine Bibliothek angelegt.");return;}
+    if (bib->BuecherListe.length==0){ printMsgConfirm("Keine Buecher in Bibliothek.");return;}
 
     printf("Bitte Suchtext eingeben:\n");
     printf("(Ganz oder Teil von Titel, Author, Ausleiher oder ISBN)\n");
-    if (readStringInput(searchStr)!=BIBL_SUCCESS || *searchStr=='\n') {printError("Eingabe nicht erkannt.");return;}
+    if (readStringInput(searchStr)!=BIBL_SUCCESS || *searchStr=='\n') { printMsgConfirm("Eingabe nicht erkannt.");return;}
     buchPtr = getNextBuchByString(searchStr, bib, &buchSearchIndex);
-    if (buchPtr==NULL){printError("Buch nicht gefunden.");return;}
+    if (buchPtr==NULL){ printMsgConfirm("Buch nicht gefunden.");return;}
 
     do {
         printBuch(buchPtr);
@@ -144,7 +156,7 @@ void menu1_auswahl(Bibliothek* bib){
                     printf("Suche von Vorne beginnen?\n");
                     if(menu_confirm()) buchSearchIndex=0;
                     buchPtr = getNextBuchByString(searchStr, bib, &buchSearchIndex);
-                    if (buchPtr==NULL){printError("Kein Buch gefunden.");return;}
+                    if (buchPtr==NULL){ printMsgConfirm("Kein Buch gefunden.");return;}
                 }
                 break;
             case 2:
@@ -158,18 +170,18 @@ void menu1_auswahl(Bibliothek* bib){
                 break;
             case 5:
                 if (buchPtr->AnzahlExemplare != buchPtr->ListeAusleiher.length){
-                    printError("Buch hat noch ausgeliehene Exemplare, konnte Buch nicht entfernen!");
+                    printMsgConfirm("Buch hat noch ausgeliehene Exemplare, konnte Buch nicht entfernen!");
                     break;
                 }
                 printf("Ausgewaehltes Buch entfernen?\n");
                 if(menu_confirm()){
                     if(removeBuch(bib,buchSearchIndex)!=BIBL_SUCCESS){
-                        printError("Konnte Buch nicht entfernen!");
+                        printMsgConfirm("Konnte Buch nicht entfernen!");
                     }else{
                         printf("Buch entfernt!\n");
                         waitUntilEnter();
                         buchPtr = getNextBuchByString(searchStr, bib, &buchSearchIndex);
-                        if (buchPtr==NULL){printError("Kein weiteres Buch gefunden.");return;}
+                        if (buchPtr==NULL){ printMsgConfirm("Kein weiteres Buch gefunden.");return;}
                     }
                 }
                 break;
@@ -186,7 +198,7 @@ void menu12_ausleihen(Buch* buch){
     char auslName[MAXBUFFERSIZE];
     int ret =0;
     if (buch->ListeAusleiher.length == buch->AnzahlExemplare) {
-        printError("Keine freien Exemplare zum Ausleihen vorhanden!");
+        printMsgConfirm("Keine freien Exemplare zum Ausleihen vorhanden!");
         return;
     };
     if (getMenuSelection(menu12_ausleihen_text)==0) return;
@@ -195,7 +207,7 @@ void menu12_ausleihen(Buch* buch){
         ret = readStringInput(auslName);
     } while (ret != BIBL_SUCCESS);
     if(checkOutBuch(buch, auslName)!=BIBL_SUCCESS){
-        printError("Konnte Buch nicht ausleihen!");
+        printMsgConfirm("Konnte Buch nicht ausleihen!");
     }else{
         printf("Buch ausgeliehen!\n");
         waitUntilEnter();
@@ -206,7 +218,7 @@ void menu13_zurueckgeben(Buch* buch){
     int menuSelection=-1;
     int auslCount=buch->ListeAusleiher.length;
     if (auslCount==0) {
-        printError("Keine verliehenen Exemplare vorhanden!");
+        printMsgConfirm("Keine verliehenen Exemplare vorhanden!");
         return;
     };
     if (getMenuSelection(menu13_zurueckgeben_text)==0) return;
@@ -220,9 +232,9 @@ void menu13_zurueckgeben(Buch* buch){
     }while (menuSelection<1 || menuSelection>auslCount);
 
     if(checkInBuchByIndex(buch, menuSelection-1) != BIBL_SUCCESS){
-        printError("Konnte Buch nicht zurueckgeben!");
+        printMsgConfirm("Konnte Buch nicht zurueckgeben!");
     }else{
-        printError("Buch zurueckgegeben!");
+        printMsgConfirm("Buch zurueckgegeben!");
     };
 }
 
@@ -306,7 +318,7 @@ void menu2_buchneu(Bibliothek* bib){
         printf("Buch aufgenommen!\n");
         waitUntilEnter();
     }else{
-        printError("Konnte Buch nicht aufnehmen!");
+        printMsgConfirm("Konnte Buch nicht aufnehmen!");
         free(tempBuch);
     }
 }

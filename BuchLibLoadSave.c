@@ -1,8 +1,7 @@
 #include "BuchLibLoadSave.h"
 
-//interne Hilfsfunktion
 /**
- *
+ * Interne Hilfsfunktion. Stellt Fehler
  * @param errorMsg String mit Fehlernachricht
  * @param bib
  * @param fp
